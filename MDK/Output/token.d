@@ -1,0 +1,9 @@
+.\output\token.o: ..\BSP\4G\OneNet\token.c
+.\output\token.o: ..\BSP\4G\OneNet\token.h
+.\output\token.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\token.o: ..\BSP\4G\OneNet\base64.h
+.\output\token.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\output\token.o: ..\BSP\4G\OneNet\hmac.h
+.\output\token.o: ..\BSP\4G\OneNet\md5.h
+.\output\token.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\output\token.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
