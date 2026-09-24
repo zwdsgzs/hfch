@@ -189,6 +189,7 @@ float str_to_float(const unsigned char *str) {
 }
 
 //字符串转整形
+<<<<<<< HEAD
 uint32_t hex_string_to_int(const unsigned char *str)
 {
     uint32_t result = 0;
@@ -226,6 +227,31 @@ uint32_t hex_string_to_int(const unsigned char *str)
     }
 
     return result;
+=======
+unsigned int hex_string_to_int(const unsigned char *hex_str) {
+	unsigned int result = 0;
+	size_t len = strlen((const char*)hex_str);
+
+	// 遍历字符串中的每个字符
+	for (size_t i = 0; i < len; ++i) {
+		char c = hex_str[i];
+
+		// 将大写字母转换为小写字母（可选，但为了统一处理）
+		c = tolower(c);
+
+		// 检查字符是否为有效的十六进制数字
+		if (c >= '0' && c <= '9') {
+			result = (result << 4) + (c - '0');
+		} else if (c >= 'a' && c <= 'f') {
+			result = (result << 4) + (c - 'a' + 10);
+		} else {
+			// 如果字符不是有效的十六进制数字，则返回错误或设置一个标志
+			fprintf(stderr, "Invalid hexadecimal digit: %c\n", c);
+			return 0; // 或你可以设置一个错误代码
+		}
+	}
+	return result;
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 }
 
 

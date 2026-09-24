@@ -38,6 +38,7 @@
 .\output\ch4.o: ..\DRIVER\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\output\ch4.o: ..\APP\stm32l0xx_it.h
 .\output\ch4.o: ..\APP\main.h
+<<<<<<< HEAD
 .\output\ch4.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h
 .\output\ch4.o: ..\FreeRTOS\Source\include\FreeRTOS.h
 .\output\ch4.o: ..\APP\FreeRTOSConfig.h
@@ -51,6 +52,8 @@
 .\output\ch4.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h
 .\output\ch4.o: ..\FreeRTOS\Source\include\semphr.h
 .\output\ch4.o: ..\FreeRTOS\Source\include\queue.h
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 .\output\ch4.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\ch4.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\ch4.o: ..\BSP\MIDDLEWARE\usart.h

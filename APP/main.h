@@ -9,10 +9,13 @@ extern "C" {
 #include "stm32l0xx_hal.h"
 
 #include "stm32l0xx_it.h"
+<<<<<<< HEAD
 #include "cmsis_os.h"
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "task.h"
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 #include "i2c.h"
 #include "tim.h"
 #include "usart.h"
@@ -68,6 +71,7 @@ void runMode(void);
 void stopMode(void);
 void cfgMode(void);
 
+<<<<<<< HEAD
 //队列句柄
 extern QueueHandle_t xUartEvtQueue;
 //信号量句柄
@@ -76,6 +80,8 @@ void appNetTask(void *argument);
 void appSlowTask(void *argument);
 void appUartTask(void *argument);
 
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 
 #ifdef __cplusplus
 }

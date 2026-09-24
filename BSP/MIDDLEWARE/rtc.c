@@ -4,8 +4,11 @@ RTC_HandleTypeDef hrtc;
 
 void RTC_Init(void)//时钟源，外部慢速晶振
 {
+<<<<<<< HEAD
     __HAL_RCC_RTC_ENABLE();
 
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
     hrtc.Instance = RTC;
     hrtc.Init.HourFormat     = RTC_HOURFORMAT_24;
     hrtc.Init.AsynchPrediv   = 127;

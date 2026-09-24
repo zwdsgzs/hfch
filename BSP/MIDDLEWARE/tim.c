@@ -35,7 +35,11 @@ void TIM3_Init(void)//100ms
   HAL_NVIC_SetPriority(TIM3_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(TIM3_IRQn);
 
+<<<<<<< HEAD
 //  HAL_TIM_Base_Start_IT(&htim3);
+=======
+  HAL_TIM_Base_Start_IT(&htim3);
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 }
 
 

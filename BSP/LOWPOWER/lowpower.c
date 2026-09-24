@@ -35,7 +35,11 @@ void Sensor_PowerOn(void)
 {
 	V3_6_POWER_SET;
 	BQ35100_Init();//电量库仑计,上电
+<<<<<<< HEAD
 //    PowerOn_4G();
+=======
+    PowerOn_4G();
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 	CH4_POWER_SET;
 	H2S_POWER_SET;
 	RADAR_POWER_SET;

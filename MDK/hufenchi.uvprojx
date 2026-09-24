@@ -10,7 +10,10 @@
       <TargetName>hufenchi</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+<<<<<<< HEAD
       <pArmCC>5060183::V5.06 update 2 (build 183)::.\ARMCC</pArmCC>
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
       <pCCUsed>5060183::V5.06 update 2 (build 183)::.\ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
@@ -56,7 +59,11 @@
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
+<<<<<<< HEAD
           <ListingPath>.\Output\</ListingPath>
+=======
+          <ListingPath>..\..\..\Documents\</ListingPath>
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -341,7 +348,11 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32L071xx</Define>
               <Undefine></Undefine>
+<<<<<<< HEAD
               <IncludePath>..\APP;..\BSP;..\BSP\MIDDLEWARE;..\BSP\CH4;..\BSP\H2S;..\BSP\RADAR;..\BSP\ACCSPEED;..\BSP\BATTER;..\BSP\TEMPHUM;..\BSP\4G;..\BSP\4G\OneNet;..\BSP\FLASH;..\BSP\LOWPOWER;..\DRIVER\STM32L0xx_HAL_Driver\Inc;..\DRIVER\CMSIS\Include;..\DRIVER\CMSIS\Device\ST\STM32L0xx\Include;..\FreeRTOS\Source\include;..\FreeRTOS\Source\CMSIS_RTOS_V2;..\FreeRTOS\Source\portable\RVDS\ARM_CM0</IncludePath>
+=======
+              <IncludePath>..\APP;..\BSP;..\BSP\MIDDLEWARE;..\BSP\CH4;..\BSP\H2S;..\BSP\RADAR;..\BSP\ACCSPEED;..\BSP\BATTER;..\BSP\TEMPHUM;..\BSP\4G;..\BSP\4G\OneNet;..\BSP\FLASH;..\BSP\LOWPOWER;..\DRIVER\STM32L0xx_HAL_Driver\Inc;..\DRIVER\CMSIS\Include;..\DRIVER\CMSIS\Device\ST\STM32L0xx\Include</IncludePath>
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
             </VariousControls>
           </Cads>
           <Aads>
@@ -400,6 +411,7 @@
               <FileType>5</FileType>
               <FilePath>..\APP\stm32l0xx_hal_conf.h</FilePath>
             </File>
+<<<<<<< HEAD
             <File>
               <FileName>FreeRTOSConfig.h</FileName>
               <FileType>5</FileType>
@@ -425,6 +437,8 @@
               <FileType>1</FileType>
               <FilePath>..\APP\Task\uartTask.c</FilePath>
             </File>
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
           </Files>
         </Group>
         <Group>
@@ -728,6 +742,7 @@
           </Files>
         </Group>
         <Group>
+<<<<<<< HEAD
           <GroupName>FreeRTOS</GroupName>
           <Files>
             <File>
@@ -783,6 +798,8 @@
           </Files>
         </Group>
         <Group>
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>

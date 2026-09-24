@@ -1,9 +1,12 @@
 --cpu Cortex-M0+
 ".\output\main.o"
 ".\output\stm32l0xx_it.o"
+<<<<<<< HEAD
 ".\output\nettask.o"
 ".\output\slowtask.o"
 ".\output\uarttask.o"
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 ".\output\system_stm32l0xx.o"
 ".\output\stm32l0xx_hal_msp.o"
 ".\output\dataprocess.o"
@@ -47,6 +50,7 @@
 ".\output\startup_stm32l071xx.o"
 ".\output\stm32l0xx_hal_rtc.o"
 ".\output\stm32l0xx_hal_rtc_ex.o"
+<<<<<<< HEAD
 ".\output\croutine.o"
 ".\output\event_groups.o"
 ".\output\list.o"
@@ -57,9 +61,15 @@
 ".\output\cmsis_os2.o"
 ".\output\heap_4.o"
 ".\output\port.o"
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 ".\output\cjson.o"
 ".\output\cjson_utils.o"
 --strict --scatter ".\Output\hufenchi.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
+<<<<<<< HEAD
 --list ".\Output\hufenchi.map" -o .\Output\hufenchi.axf
+=======
+--list "..\..\..\Documents\hufenchi.map" -o .\Output\hufenchi.axf
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a

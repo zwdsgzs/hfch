@@ -38,6 +38,7 @@
 .\output\eeprom.o: ..\DRIVER\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\output\eeprom.o: ..\APP\stm32l0xx_it.h
 .\output\eeprom.o: ..\APP\main.h
+<<<<<<< HEAD
 .\output\eeprom.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h
 .\output\eeprom.o: ..\FreeRTOS\Source\include\FreeRTOS.h
 .\output\eeprom.o: ..\APP\FreeRTOSConfig.h
@@ -51,6 +52,8 @@
 .\output\eeprom.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h
 .\output\eeprom.o: ..\FreeRTOS\Source\include\semphr.h
 .\output\eeprom.o: ..\FreeRTOS\Source\include\queue.h
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\usart.h

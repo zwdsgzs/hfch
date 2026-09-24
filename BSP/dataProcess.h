@@ -11,7 +11,11 @@
 #include <ctype.h>
 #include <math.h>
 
+<<<<<<< HEAD
 #define RING_BUF_SIZE 256 //必须是2的n次幂
+=======
+#define RING_BUF_SIZE 300
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 
 //#define uint8_t		unsigned char
 //#define uint16_t	unsigned short
@@ -71,7 +75,11 @@ void ring_buf_clear(ring_buffer_t *rb);
 
 int BCDToDecimal(int bcd);
 float str_to_float(const unsigned char *str);
+<<<<<<< HEAD
 unsigned int hex_string_to_int(const unsigned char *str);
+=======
+unsigned int hex_string_to_int(const unsigned char *hex_str);
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 double round_to_two_decimal_places(float number);
 
 uint16_t Modbus_CRC16(uint8_t* data, size_t length);

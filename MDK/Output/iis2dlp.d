@@ -38,6 +38,7 @@
 .\output\iis2dlp.o: ..\DRIVER\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\output\iis2dlp.o: ..\APP\stm32l0xx_it.h
 .\output\iis2dlp.o: ..\APP\main.h
+<<<<<<< HEAD
 .\output\iis2dlp.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h
 .\output\iis2dlp.o: ..\FreeRTOS\Source\include\FreeRTOS.h
 .\output\iis2dlp.o: ..\APP\FreeRTOSConfig.h
@@ -51,6 +52,8 @@
 .\output\iis2dlp.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h
 .\output\iis2dlp.o: ..\FreeRTOS\Source\include\semphr.h
 .\output\iis2dlp.o: ..\FreeRTOS\Source\include\queue.h
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\usart.h

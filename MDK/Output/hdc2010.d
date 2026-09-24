@@ -38,6 +38,7 @@
 .\output\hdc2010.o: ..\DRIVER\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\output\hdc2010.o: ..\APP\stm32l0xx_it.h
 .\output\hdc2010.o: ..\APP\main.h
+<<<<<<< HEAD
 .\output\hdc2010.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h
 .\output\hdc2010.o: ..\FreeRTOS\Source\include\FreeRTOS.h
 .\output\hdc2010.o: ..\APP\FreeRTOSConfig.h
@@ -51,6 +52,8 @@
 .\output\hdc2010.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h
 .\output\hdc2010.o: ..\FreeRTOS\Source\include\semphr.h
 .\output\hdc2010.o: ..\FreeRTOS\Source\include\queue.h
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 .\output\hdc2010.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\hdc2010.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\hdc2010.o: ..\BSP\MIDDLEWARE\usart.h

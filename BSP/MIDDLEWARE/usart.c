@@ -23,8 +23,11 @@ void USART1_Init(UART_HandleTypeDef *uartHandle)
 
   __HAL_RCC_USART1_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+<<<<<<< HEAD
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   /**USART1 GPIO Configuration
   PA9     ------> USART1_TX
   PA10     ------> USART1_RX
@@ -52,6 +55,12 @@ void USART1_Init(UART_HandleTypeDef *uartHandle)
     Error_Handler();
   }
 
+<<<<<<< HEAD
+=======
+  HAL_NVIC_SetPriority(USART1_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(USART1_IRQn);
+
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   /* USART1 DMA Init */
   /* USART1_RX Init */
   hdma_usart1_rx.Instance = DMA1_Channel3;
@@ -68,6 +77,12 @@ void USART1_Init(UART_HandleTypeDef *uartHandle)
     Error_Handler();
   }
 
+<<<<<<< HEAD
+=======
+  HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
+
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart1_rx);
 
   // 使能 USART 空闲中断
@@ -81,8 +96,11 @@ void USART2_Init(UART_HandleTypeDef *uartHandle)
 
   __HAL_RCC_USART2_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+<<<<<<< HEAD
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   /**USART2 GPIO Configuration
   PA2     ------> USART2_TX
   PA3     ------> USART2_RX
@@ -109,6 +127,12 @@ void USART2_Init(UART_HandleTypeDef *uartHandle)
   {
     Error_Handler();
   }
+<<<<<<< HEAD
+=======
+
+  HAL_NVIC_SetPriority(USART2_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(USART2_IRQn);
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
    
   /* USART2 DMA Init */
   /* USART2_RX Init */
@@ -126,6 +150,12 @@ void USART2_Init(UART_HandleTypeDef *uartHandle)
     Error_Handler();
   }
 
+<<<<<<< HEAD
+=======
+  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
+
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart2_rx);
 
   // 使能 USART 空闲中断
@@ -139,8 +169,11 @@ void USART4_Init(UART_HandleTypeDef *uartHandle)
   
   __HAL_RCC_USART4_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+<<<<<<< HEAD
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   /**USART4 GPIO Configuration
   PC10     ------> USART4_TX
   PC11     ------> USART4_RX
@@ -167,6 +200,12 @@ void USART4_Init(UART_HandleTypeDef *uartHandle)
   {
     Error_Handler();
   }
+<<<<<<< HEAD
+=======
+
+  HAL_NVIC_SetPriority(USART4_5_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(USART4_5_IRQn);
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   
   /* USART4 DMA Init */
   /* USART4_RX Init */
@@ -184,10 +223,20 @@ void USART4_Init(UART_HandleTypeDef *uartHandle)
     Error_Handler();
   }
 
+<<<<<<< HEAD
   __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart4_rx);
 
   // 使能 USART 空闲中断
 //  __HAL_UART_ENABLE_IT(uartHandle, UART_IT_IDLE);
+=======
+  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
+
+  __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart4_rx);
+
+  // 使能 USART 空闲中断
+  __HAL_UART_ENABLE_IT(uartHandle, UART_IT_IDLE);
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 }
 /* USART5 init function */
 
@@ -197,8 +246,11 @@ void USART5_Init(UART_HandleTypeDef *uartHandle)
 
   __HAL_RCC_USART5_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+<<<<<<< HEAD
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   /**USART5 GPIO Configuration
   PB3     ------> USART5_TX
   PB4     ------> USART5_RX
@@ -226,6 +278,12 @@ void USART5_Init(UART_HandleTypeDef *uartHandle)
     Error_Handler();
   }
 
+<<<<<<< HEAD
+=======
+  HAL_NVIC_SetPriority(USART4_5_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(USART4_5_IRQn);
+
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   /* USART5 DMA Init */
   /* USART5_RX Init */
   hdma_usart5_rx.Instance = DMA1_Channel2;
@@ -242,12 +300,19 @@ void USART5_Init(UART_HandleTypeDef *uartHandle)
     Error_Handler();
   }
 
+<<<<<<< HEAD
+=======
+  HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
+
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
   __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart5_rx);
 
   // 使能 USART 空闲中断
   __HAL_UART_ENABLE_IT(uartHandle, UART_IT_IDLE);
 }
 
+<<<<<<< HEAD
 void uartRcvStart(unsigned char uartx)
 {
   HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 1, 0);
@@ -302,6 +367,65 @@ void uartRcvStart(unsigned char uartx)
 		return;
 		// DMA 通道没使能！
 	}
+=======
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+
+  if (huart->Instance == USART1)
+  {
+	  ring_buf_write(&rb_usart1, uart1_rxbuffer, Size);
+//	  stu_uart.uchStatus = 1;
+
+      HAL_UART_Receive_DMA(huart, uart1_rxbuffer, RX_BUFFER_SIZE);
+  }
+  else if (huart->Instance == USART2)
+  {
+	  ring_buf_write(&rb_usart2, uart2_rxbuffer, Size);
+	  stu_uart.uchStatus = 2;
+
+      HAL_UART_Receive_DMA(huart, uart2_rxbuffer, RX_BUFFER_SIZE);
+  }
+  else if (huart->Instance == USART4)
+  {
+	  ring_buf_write(&rb_usart4, uart4_rxbuffer, Size);
+	  stu_uart.uchStatus = 4;
+
+      HAL_UART_Receive_DMA(huart, uart4_rxbuffer, RX_BUFFER_SIZE);
+  }
+  else if (huart->Instance == USART5)
+  {
+	  ring_buf_write(&rb_usart5, uart5_rxbuffer, Size);
+	  stu_uart.uchStatus = 5;
+
+      HAL_UART_Receive_DMA(huart, uart5_rxbuffer, RX_BUFFER_SIZE);
+  }
+}
+
+void uartRcvStart(unsigned char uartx)
+{
+	switch (uartx)
+	{
+	case 0:
+		HAL_UART_Receive_DMA(&huart1, uart1_rxbuffer, RX_BUFFER_SIZE);
+		HAL_UART_Receive_DMA(&huart2, uart2_rxbuffer, RX_BUFFER_SIZE);
+		HAL_UART_Receive_DMA(&huart4, uart4_rxbuffer, RX_BUFFER_SIZE);
+		HAL_UART_Receive_DMA(&huart5, uart5_rxbuffer, RX_BUFFER_SIZE);
+		break;
+	case 1:
+		HAL_UART_Receive_DMA(&huart1, uart1_rxbuffer, RX_BUFFER_SIZE);
+		break;
+	case 2:
+		HAL_UART_Receive_DMA(&huart2, uart2_rxbuffer, RX_BUFFER_SIZE);
+		break;
+	case 4:
+		HAL_UART_Receive_DMA(&huart4, uart4_rxbuffer, RX_BUFFER_SIZE);
+		break;
+	case 5:
+		HAL_UART_Receive_DMA(&huart5, uart5_rxbuffer, RX_BUFFER_SIZE);
+		break;
+	default:break;
+	}
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 }
 
 /**
@@ -338,6 +462,7 @@ HAL_StatusTypeDef uartSendIT(unsigned char uartx, const uint8_t *data, uint16_t 
   return HAL_UART_Transmit_IT(huart, data, len);
 }
 
+<<<<<<< HEAD
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1)
@@ -476,3 +601,5 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
     xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
   }
 }
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a

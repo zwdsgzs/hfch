@@ -38,6 +38,7 @@
 .\output\ec800m.o: ..\DRIVER\STM32L0xx_HAL_Driver\Inc\stm32l0xx_hal_uart_ex.h
 .\output\ec800m.o: ..\APP\stm32l0xx_it.h
 .\output\ec800m.o: ..\APP\main.h
+<<<<<<< HEAD
 .\output\ec800m.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os.h
 .\output\ec800m.o: ..\FreeRTOS\Source\include\FreeRTOS.h
 .\output\ec800m.o: ..\APP\FreeRTOSConfig.h
@@ -51,6 +52,8 @@
 .\output\ec800m.o: ..\FreeRTOS\Source\CMSIS_RTOS_V2\cmsis_os2.h
 .\output\ec800m.o: ..\FreeRTOS\Source\include\semphr.h
 .\output\ec800m.o: ..\FreeRTOS\Source\include\queue.h
+=======
+>>>>>>> 974e0862a7e52c0771c8a8e840632994fe4bc83a
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\usart.h
