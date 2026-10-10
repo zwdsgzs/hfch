@@ -54,6 +54,7 @@
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\usart.h
+.\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\sysclk.h
@@ -63,15 +64,13 @@
 .\output\dataprocess.o: ..\BSP\H2S\h2s.h
 .\output\dataprocess.o: ..\BSP\RADAR\radar.h
 .\output\dataprocess.o: ..\BSP\4G\EC800M.h
-.\output\dataprocess.o: ..\BSP\4G\OneNet\token.h
+.\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\dataprocess.o: ..\BSP\TEMPHUM\HDC2010.h
 .\output\dataprocess.o: ..\BSP\BATTER\bq35100.h
 .\output\dataprocess.o: ..\BSP\ACCSPEED\IIS2DLP.h
+.\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\output\dataprocess.o: ..\BSP\FLASH\eeprom.h
 .\output\dataprocess.o: ..\BSP\LOWPOWER\lowpower.h
-.\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
-.\output\dataprocess.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

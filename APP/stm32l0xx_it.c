@@ -72,14 +72,12 @@ void HardFault_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  /* USER CODE BEGIN SysTick_IRQn 0 */
-
-  /* USER CODE END SysTick_IRQn 0 */
   /* Explicitly clear COUNTFLAG to avoid timing jitter in CMSIS-RTOS V2 */
 #if (configUSE_TICKLESS_IDLE == 0)
   (void)SysTick->CTRL;
 #endif
-HAL_IncTick();
+  HAL_IncTick();
+
 #if (INCLUDE_xTaskGetSchedulerState == 1 )
   if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
   {
@@ -88,9 +86,6 @@ HAL_IncTick();
 #if (INCLUDE_xTaskGetSchedulerState == 1 )
   }
 #endif /* INCLUDE_xTaskGetSchedulerState */
-  /* USER CODE BEGIN SysTick_IRQn 1 */
-
-  /* USER CODE END SysTick_IRQn 1 */
 }
 
 /**
@@ -138,10 +133,10 @@ void EXTI4_15_IRQHandler(void)
   /* USER CODE BEGIN EXTI4_15_IRQn 0 */
     
   /* USER CODE END EXTI4_15_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_8);
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_12);
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
+  HAL_GPIO_EXTI_IRQHandler(BAT_INT_PIN);//GPIO_PIN_5
+  HAL_GPIO_EXTI_IRQHandler(ACC_INT_PIN);//GPIO_PIN_8
+  HAL_GPIO_EXTI_IRQHandler(TH_INT_PIN);//GPIO_PIN_13
+  HAL_GPIO_EXTI_IRQHandler(MAGN_INT_PIN);//GPIO_PIN_12
   /* USER CODE BEGIN EXTI4_15_IRQn 1 */
 
   /* USER CODE END EXTI4_15_IRQn 1 */

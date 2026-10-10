@@ -5,12 +5,11 @@ void laserCH4rcv(void)
 	unsigned char uchData[ch4Length + 1] = {0};
 	unsigned char uchLength = 0;
 	unsigned char uchData0 = 0;
-
 	
-	if((rb_usart4.head - rb_usart4.tail) != 0)
-	{
-		uchLength = 1;
-	}
+//	if((rb_usart4.head - rb_usart4.tail) != 0)
+//	{
+//		uchLength = 1;
+//	}
 	uchLength = ring_buf_available(&rb_usart4);
 	if (uchLength >= ch4Length)
 	{

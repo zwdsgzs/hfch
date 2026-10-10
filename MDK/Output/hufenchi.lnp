@@ -17,10 +17,6 @@
 ".\output\h2s.o"
 ".\output\radar.o"
 ".\output\ec800m.o"
-".\output\hmac.o"
-".\output\md5.o"
-".\output\token.o"
-".\output\base64.o"
 ".\output\iis2dlp.o"
 ".\output\bq35100.o"
 ".\output\hdc2010.o"
@@ -59,7 +55,7 @@
 ".\output\port.o"
 ".\output\cjson.o"
 ".\output\cjson_utils.o"
---strict --scatter ".\Output\hufenchi.sct"
+--library_type=microlib --strict --scatter ".\Output\hufenchi.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list ".\Output\hufenchi.map" -o .\Output\hufenchi.axf

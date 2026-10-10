@@ -9,4 +9,6 @@ void Radarrcv(void);
 void praseRadarData(unsigned char uchData[]);
 void LD8001_Read(void);
 
+void rcvAndSend(void);
+
 #endif 

@@ -128,7 +128,8 @@ void HDC2010EnableDRDYInterrupt(void)
 {
     uint8_t cfg;
     if (HDC2010ReadReg(HDC2010_INTERRUPT_CONFIG, &cfg) != 0) return;
-    cfg |= 0x80;   /* bit7 = DRDY_ENABLE */
+//    cfg |= 0x80;   /* bit7 = DRDY_ENABLE */
+	cfg = 0x80;
     HDC2010WriteReg(HDC2010_INTERRUPT_CONFIG, cfg);
 }
 
@@ -191,7 +192,7 @@ void HDC2010_Init(void)
 {
     /* 软复位 */
     HDC2010Reset();
-    HAL_Delay(10);
+    osDelay(10);
 
     /* 校验器件 ID（应为 0x07D0） */
     uint16_t id = 0;
@@ -211,7 +212,7 @@ void HDC2010_Init(void)
     HDC2010SetRate(HDC2010_RATE_MANUAL);
 
     /* 配置 DRDY 中断 */
-    HDC2010SetInterruptPolarity(HDC2010_INT_ACTIVE_LOW);   /* 低有效 */
+    HDC2010SetInterruptPolarity(HDC2010_INT_ACTIVE_HIGH);   /* 高有效 */
     HDC2010SetInterruptMode(HDC2010_INT_LEVEL);            /* 电平敏感 */
     HDC2010EnableDRDYInterrupt();                           /* 使能中断发生器 */
     HDC2010EnableDRDY_Pin();                                /* 使能引脚输出 */

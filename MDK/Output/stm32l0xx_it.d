@@ -54,13 +54,13 @@
 .\output\stm32l0xx_it.o: ..\APP\main.h
 .\output\stm32l0xx_it.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\stm32l0xx_it.o: ..\BSP\MIDDLEWARE\usart.h
+.\output\stm32l0xx_it.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\stm32l0xx_it.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\stm32l0xx_it.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\stm32l0xx_it.o: ..\BSP\MIDDLEWARE\sysclk.h
 .\output\stm32l0xx_it.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\stm32l0xx_it.o: ..\BSP\dataProcess.h
 .\output\stm32l0xx_it.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\stm32l0xx_it.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\stm32l0xx_it.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\stm32l0xx_it.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\stm32l0xx_it.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -69,7 +69,6 @@
 .\output\stm32l0xx_it.o: ..\BSP\H2S\h2s.h
 .\output\stm32l0xx_it.o: ..\BSP\RADAR\radar.h
 .\output\stm32l0xx_it.o: ..\BSP\4G\EC800M.h
-.\output\stm32l0xx_it.o: ..\BSP\4G\OneNet\token.h
 .\output\stm32l0xx_it.o: ..\BSP\TEMPHUM\HDC2010.h
 .\output\stm32l0xx_it.o: ..\BSP\BATTER\bq35100.h
 .\output\stm32l0xx_it.o: ..\BSP\ACCSPEED\IIS2DLP.h

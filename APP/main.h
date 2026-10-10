@@ -38,23 +38,23 @@ extern "C" {
 
 #include <stdbool.h>
 
-#define runtime	400	//40秒，4g上电启动要10秒，
+/* =========================================================
+ *  USART5 用途选择
+ *      1 = 调试打印（PC 串口助手）
+ *      0 = 传感器通信
+ * ========================================================= */
+#define DEBUG_UART5     1
 
-// 状态类型定义
-typedef enum {
-    STATE_RUNNING,
-    STATE_STOPPED,
-    STATE_CONFIG,
-} State_t;
-
-// 状态机结构
-typedef struct {
-    State_t state;
-    int counter;  // 运行时的计数器
-}StateMachine;
-extern StateMachine sm;
+/* 调试宏：只有当 DEBUG_UART5 == 1 时才有效 */
+#if (DEBUG_UART5 == 1)
+    #define DBG_LOG(fmt, ...)    printf(fmt, ##__VA_ARGS__)
+#else
+    #define DBG_LOG(fmt, ...)    ((void)0)
+#endif
 
 typedef struct{
+	bool bUpport;//上报标志，接收到加速度后，等待上报时上报
+
 	bool bAccFlag;//加速计中断标志
 	bool bRtcwkp;//RTC中断标志
 

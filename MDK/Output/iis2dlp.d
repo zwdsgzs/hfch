@@ -54,13 +54,13 @@
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\usart.h
+.\output\iis2dlp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\sysclk.h
 .\output\iis2dlp.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\iis2dlp.o: ..\BSP\dataProcess.h
 .\output\iis2dlp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\iis2dlp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\iis2dlp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\iis2dlp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\iis2dlp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -69,7 +69,6 @@
 .\output\iis2dlp.o: ..\BSP\H2S\h2s.h
 .\output\iis2dlp.o: ..\BSP\RADAR\radar.h
 .\output\iis2dlp.o: ..\BSP\4G\EC800M.h
-.\output\iis2dlp.o: ..\BSP\4G\OneNet\token.h
 .\output\iis2dlp.o: ..\BSP\TEMPHUM\HDC2010.h
 .\output\iis2dlp.o: ..\BSP\BATTER\bq35100.h
 .\output\iis2dlp.o: ..\BSP\ACCSPEED\IIS2DLP.h

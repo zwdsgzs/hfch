@@ -54,13 +54,13 @@
 .\output\i2c.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\i2c.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\i2c.o: ..\BSP\MIDDLEWARE\usart.h
+.\output\i2c.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\i2c.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\i2c.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\i2c.o: ..\BSP\MIDDLEWARE\sysclk.h
 .\output\i2c.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\i2c.o: ..\BSP\dataProcess.h
 .\output\i2c.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\i2c.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\i2c.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\i2c.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\i2c.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -69,7 +69,6 @@
 .\output\i2c.o: ..\BSP\H2S\h2s.h
 .\output\i2c.o: ..\BSP\RADAR\radar.h
 .\output\i2c.o: ..\BSP\4G\EC800M.h
-.\output\i2c.o: ..\BSP\4G\OneNet\token.h
 .\output\i2c.o: ..\BSP\TEMPHUM\HDC2010.h
 .\output\i2c.o: ..\BSP\BATTER\bq35100.h
 .\output\i2c.o: ..\BSP\ACCSPEED\IIS2DLP.h

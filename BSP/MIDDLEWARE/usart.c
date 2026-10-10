@@ -69,9 +69,6 @@ void USART1_Init(UART_HandleTypeDef *uartHandle)
   }
 
   __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart1_rx);
-
-  // 使能 USART 空闲中断
-  __HAL_UART_ENABLE_IT(uartHandle, UART_IT_IDLE);
 }
 /* USART2 init function */
 
@@ -127,9 +124,6 @@ void USART2_Init(UART_HandleTypeDef *uartHandle)
   }
 
   __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart2_rx);
-
-  // 使能 USART 空闲中断
-  __HAL_UART_ENABLE_IT(uartHandle, UART_IT_IDLE);
 }
 /* USART4 init function */
 
@@ -185,9 +179,6 @@ void USART4_Init(UART_HandleTypeDef *uartHandle)
   }
 
   __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart4_rx);
-
-  // 使能 USART 空闲中断
-//  __HAL_UART_ENABLE_IT(uartHandle, UART_IT_IDLE);
 }
 /* USART5 init function */
 
@@ -243,39 +234,36 @@ void USART5_Init(UART_HandleTypeDef *uartHandle)
   }
 
   __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart5_rx);
-
-  // 使能 USART 空闲中断
-  __HAL_UART_ENABLE_IT(uartHandle, UART_IT_IDLE);
 }
 
 void uartRcvStart(unsigned char uartx)
 {
-  HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 1, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
 
-  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 1, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
 
-  HAL_NVIC_SetPriority(USART1_IRQn, 2, 0);
+  HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
 
-  HAL_NVIC_SetPriority(USART2_IRQn, 2, 0);
+  HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(USART2_IRQn);
 
-  HAL_NVIC_SetPriority(USART4_5_IRQn, 2, 0);
+  HAL_NVIC_SetPriority(USART4_5_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(USART4_5_IRQn);
 
 	switch (uartx)
 	{
 	case 0:
-//		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart1_rxbuffer, RX_BUFFER_SIZE);
-//		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
-//		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_rxbuffer, RX_BUFFER_SIZE);
-//		__HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart1_rxbuffer, RX_BUFFER_SIZE);
+		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_rxbuffer, RX_BUFFER_SIZE);
+		__HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
 		HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart4_rxbuffer, RX_BUFFER_SIZE);
 		__HAL_DMA_DISABLE_IT(&hdma_usart4_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
-//		HAL_UARTEx_ReceiveToIdle_DMA(&huart5, uart5_rxbuffer, RX_BUFFER_SIZE);
-//		__HAL_DMA_DISABLE_IT(&hdma_usart5_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart5, uart5_rxbuffer, RX_BUFFER_SIZE);
+		__HAL_DMA_DISABLE_IT(&hdma_usart5_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
 		break;
 	case 1:
 		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart1_rxbuffer, RX_BUFFER_SIZE);
@@ -294,13 +282,6 @@ void uartRcvStart(unsigned char uartx)
 		__HAL_DMA_DISABLE_IT(&hdma_usart5_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
 		break;
 	default:break;
-	}
-
-	// DMA1_Channel6 的 CCR 寄存器 EN 位
-	if ((DMA1_Channel6->CCR & DMA_CCR_EN) == 0)
-	{
-		return;
-		// DMA 通道没使能！
 	}
 }
 
@@ -382,7 +363,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
         huart->ErrorCode = HAL_UART_ERROR_NONE;
 	}
 }
-int leng = 0;
+
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 	static uint16_t uart1size = 0;
@@ -445,7 +426,6 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		  ring_buf_write(&rb_usart4, &uart4_rxbuffer[uart4size], RX_BUFFER_SIZE - uart4size);
 		  ring_buf_write(&rb_usart4, uart4_rxbuffer, Size);
 	  }
-	  leng = Size - uart4size;
 	  uart4size = Size;
 	  if (uart4size >= RX_BUFFER_SIZE) 
 	  {
@@ -475,4 +455,15 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	  stu_uart.uchStatus = 5;
     xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
   }
+  portYIELD_FROM_ISR(woken);
 }
+
+#if (DEBUG_UART5 == 1)
+/* ---------- 调试模式：printf → USART5 ---------- */
+int fputc(int ch, FILE *f)
+{
+    HAL_UART_Transmit(&huart5, (uint8_t *)&ch, 1, 100);
+    return ch;
+}
+#endif
+

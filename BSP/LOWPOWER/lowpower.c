@@ -4,21 +4,23 @@ void PowerOn_4G(void)
 {
     LTE_POWER_SET;//上电
 	LTE_PWRKEY_SET;
-	LTE_RST_SET;
+	LTE_RST_RESET;
 	LTE_DTR_SET;
-	HAL_Delay(35);
+	osDelay(35);
 	LTE_PWRKEY_RESET;
-	HAL_Delay(720);
+	osDelay(27);
+	LTE_RST_SET;
+	osDelay(700);
 	LTE_PWRKEY_SET;
 }
 
 void PowerOff_4G(void)
 {
     LTE_PWRKEY_RESET;
-	HAL_Delay(750);
+	osDelay(750);
 	LTE_PWRKEY_SET;
-	HAL_Delay(10000);
-	LTE_POWER_RESET;
+	osDelay(3000);//等待模块完全关机
+	LTE_POWER_RESET;	
 	LTE_PWRKEY_RESET;
 	LTE_RST_RESET;
 	LTE_DTR_RESET;
@@ -35,7 +37,6 @@ void Sensor_PowerOn(void)
 {
 	V3_6_POWER_SET;
 	BQ35100_Init();//电量库仑计,上电
-//    PowerOn_4G();
 	CH4_POWER_SET;
 	H2S_POWER_SET;
 	RADAR_POWER_SET;
@@ -47,9 +48,9 @@ void Sensor_PowerOff(void)
 	H2S_POWER_RESET;
 	RADAR_POWER_RESET;
     PowerOff_4G();
-	LED_POWER_RESET;
+	LED_POWER_SET;
 
-	GE_RESET;
+//	GE_RESET;
 	V3_6_POWER_RESET;
 }
 
@@ -128,7 +129,7 @@ void wkp_pin_Power_cfg(void)
 	IIS2DLPC_Init();//加速度计
 }
 
-void Sleep(void)
+void Sleep(uint32_t minutes)
 {
     /* 清 MQTT 状态 */
     stu_4G.get_frist_Mq_flg = 0;
@@ -140,6 +141,8 @@ void Sleep(void)
     /* 暂停 SysTick（防止它不断唤醒 CPU） */
     HAL_SuspendTick();
 
+	RTC_StartWakeUp_Minutes(minutes);
+
     /* 进入 STOP 模式 */
     HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
 
@@ -149,7 +152,7 @@ void Sleep(void)
     HAL_ResumeTick();
 
     /* 重新配置系统时钟（STOP 唤醒后时钟会切回 MSI/HSI） */
-    SystemClock_Config();
+    SystemClock_ReConfig();
 
 	/* 清 GPIO EXTI 标志 */
     HAL_NVIC_ClearPendingIRQ(EXTI4_15_IRQn);
@@ -159,7 +162,9 @@ void Sleep(void)
     __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
 
     /* 关 RTC 唤醒定时器（如果不需要持续唤醒） */
-    HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
+//    HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
+
+	stu_flag.bRtcwkp = false;
 
     /* 恢复引脚和外设 */
     wkp_pin_Power_cfg();
@@ -167,9 +172,8 @@ void Sleep(void)
 	//计算电量
 	BQ35100_ReadAccumulatedCapacity();
 
-	stu_4G.flow_pub_pending = 0;
-	stu_flag.bRtcwkp = false;
-	Flow_Start();
+	//重连4g
+//	reConnect_4G();
 }
 
 

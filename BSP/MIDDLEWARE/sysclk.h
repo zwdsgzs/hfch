@@ -5,7 +5,7 @@
 
 void SystemClock_Config(void);
 
-
+void SystemClock_ReConfig(void);
 
 #endif 
 

@@ -69,7 +69,6 @@
 .\output\usart.o: ..\BSP\H2S\h2s.h
 .\output\usart.o: ..\BSP\RADAR\radar.h
 .\output\usart.o: ..\BSP\4G\EC800M.h
-.\output\usart.o: ..\BSP\4G\OneNet\token.h
 .\output\usart.o: ..\BSP\TEMPHUM\HDC2010.h
 .\output\usart.o: ..\BSP\BATTER\bq35100.h
 .\output\usart.o: ..\BSP\ACCSPEED\IIS2DLP.h

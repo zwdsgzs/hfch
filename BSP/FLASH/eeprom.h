@@ -27,10 +27,11 @@ typedef struct
 	char   productKey[32];// Json---Mid
 	char   deviceName[32];// Json---Mid
 	char   deviceSecret[52];// Json---Mid
-
 	char   mqttBroker[52];// Json---Mid
 
-	unsigned int   updateIntervalmins;
+	unsigned int   updateIntervalmins;//休眠时间
+
+	float fAngle;//倾斜角度
 
 	unsigned int   unLat;//纬度*10000
 	unsigned int   unLon;//经度*10000

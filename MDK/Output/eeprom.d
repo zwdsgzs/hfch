@@ -54,13 +54,13 @@
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\usart.h
+.\output\eeprom.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\sysclk.h
 .\output\eeprom.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\eeprom.o: ..\BSP\dataProcess.h
 .\output\eeprom.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\eeprom.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\eeprom.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\eeprom.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\eeprom.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -69,7 +69,6 @@
 .\output\eeprom.o: ..\BSP\H2S\h2s.h
 .\output\eeprom.o: ..\BSP\RADAR\radar.h
 .\output\eeprom.o: ..\BSP\4G\EC800M.h
-.\output\eeprom.o: ..\BSP\4G\OneNet\token.h
 .\output\eeprom.o: ..\BSP\TEMPHUM\HDC2010.h
 .\output\eeprom.o: ..\BSP\BATTER\bq35100.h
 .\output\eeprom.o: ..\BSP\ACCSPEED\IIS2DLP.h

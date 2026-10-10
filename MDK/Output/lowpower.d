@@ -54,13 +54,13 @@
 .\output\lowpower.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\lowpower.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\lowpower.o: ..\BSP\MIDDLEWARE\usart.h
+.\output\lowpower.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\lowpower.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\lowpower.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\lowpower.o: ..\BSP\MIDDLEWARE\sysclk.h
 .\output\lowpower.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\lowpower.o: ..\BSP\dataProcess.h
 .\output\lowpower.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\lowpower.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\lowpower.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\lowpower.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\lowpower.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -69,7 +69,6 @@
 .\output\lowpower.o: ..\BSP\H2S\h2s.h
 .\output\lowpower.o: ..\BSP\RADAR\radar.h
 .\output\lowpower.o: ..\BSP\4G\EC800M.h
-.\output\lowpower.o: ..\BSP\4G\OneNet\token.h
 .\output\lowpower.o: ..\BSP\TEMPHUM\HDC2010.h
 .\output\lowpower.o: ..\BSP\BATTER\bq35100.h
 .\output\lowpower.o: ..\BSP\ACCSPEED\IIS2DLP.h

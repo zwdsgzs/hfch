@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include <math.h>
 
-#define RING_BUF_SIZE 256 //必须是2的n次幂
+#define RING_BUF_SIZE 512 //必须是2的n次幂
 
 //#define uint8_t		unsigned char
 //#define uint16_t	unsigned short
@@ -38,6 +38,9 @@ typedef struct{
 
 	unsigned char uchBattery;
 
+	unsigned char uchReportCount;//每天上报次数
+	unsigned char uchLDCnt;	//如果雷达三次采集都是0，则上报雷达为0
+
 	unsigned short usCH4;	//甲烷
 	unsigned short usH2S;	//硫化氢
 	unsigned short usLD;	//雷达液位
@@ -51,6 +54,7 @@ typedef struct{
 	unsigned short sLD[5];	//雷达液位
 	unsigned short sTemp[5];//温度
 	unsigned short sHum[5];	//湿度
+
 	unsigned short sAngle[5];//倾角
 
 	unsigned int unBatEle;

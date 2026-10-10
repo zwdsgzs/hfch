@@ -38,7 +38,7 @@ void praseRadarData(unsigned char uchData[])
 	unsigned short Data;
 
 	recv_crc = uchData[radarLength - 2] | (uchData[radarLength - 1] << 8);
-	calc_crc = Modbus_CRC16(uchData, radarLength);
+	calc_crc = Modbus_CRC16(uchData, radarLength - 2);
 
 	if (recv_crc == calc_crc)
 	{
@@ -52,3 +52,18 @@ void LD8001_Read(void)
 {
 	uartSendIT(5, ldreadbuff, sizeof(ldreadbuff));
 }
+
+void rcvAndSend(void)
+{
+	unsigned char uchData[200] = {0};
+	unsigned char uchLength = 0;
+
+	uchLength = ring_buf_available(&rb_usart5);
+	if (uchLength > 0)
+	{
+		ring_buf_read(&rb_usart5, uchData, uchLength);
+		uartSendIT(1, uchData, uchLength);
+	}
+}
+
+

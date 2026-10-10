@@ -53,13 +53,13 @@
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\usart.h
+.\output\slowtask.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\sysclk.h
 .\output\slowtask.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\slowtask.o: ..\BSP\dataProcess.h
 .\output\slowtask.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\slowtask.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\slowtask.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\slowtask.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\slowtask.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -68,7 +68,6 @@
 .\output\slowtask.o: ..\BSP\H2S\h2s.h
 .\output\slowtask.o: ..\BSP\RADAR\radar.h
 .\output\slowtask.o: ..\BSP\4G\EC800M.h
-.\output\slowtask.o: ..\BSP\4G\OneNet\token.h
 .\output\slowtask.o: ..\BSP\TEMPHUM\HDC2010.h
 .\output\slowtask.o: ..\BSP\BATTER\bq35100.h
 .\output\slowtask.o: ..\BSP\ACCSPEED\IIS2DLP.h

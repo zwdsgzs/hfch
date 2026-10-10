@@ -34,12 +34,22 @@ void RTC_StartWakeUp_Minutes(uint32_t minutes)
 
     /* 范围检查：CK_SPRE_16BITS 最大 65535 秒 */
     if (seconds > 65535) seconds = 65535;
+	
+//	seconds = 30;
+
+	__HAL_RTC_WAKEUPTIMER_CLEAR_FLAG(&hrtc, RTC_FLAG_WUTF);
+	__HAL_RTC_WAKEUPTIMER_EXTI_CLEAR_FLAG();
+	HAL_NVIC_ClearPendingIRQ(RTC_IRQn);
+    __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
 
     /* 先关掉上次的 */
     HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
 
     /* 启动，计数值 = 秒数 */
     HAL_RTCEx_SetWakeUpTimer_IT(&hrtc, seconds, RTC_WAKEUPCLOCK_CK_SPRE_16BITS);
+
+
+	__HAL_RTC_WAKEUPTIMER_ENABLE_IT(&hrtc, RTC_IT_WUT);
 }
 
 void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc)
@@ -47,5 +57,6 @@ void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc)
     __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
 	stu_flag.bRtcwkp = true;
 }
+
 
 

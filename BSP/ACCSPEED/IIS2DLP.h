@@ -6,8 +6,40 @@ extern "C" {
 #endif
 
 #include "main.h"
+#include <math.h>
 
 #define IIS2DLP_ADD	0x18
+
+/* ============================================================
+ *              唤醒中断（30° 倾角检测）配置
+ * ============================================================ */
+//	WK_THS	sin(θ) = WK_THS/32		 θ
+//	16		0.5						30°
+//	24		0.75					48.6°
+//	28		0.875					61.0°
+//	30		0.9375					69.6°
+//	31		0.96875					75.6°
+//	32		1.0						90°
+
+/* 唤醒角度阈值标定系数
+ * ±2g，满量程 FS = 2000mg
+ * 1 LSB = 2000mg / 64 = 31.25mg
+ * sin(θ) × 1000mg = WK_THS × 31.25mg
+ * WK_THS = sin(θ) × 1000 / 31.25
+ * WK_THS = sin(θ) × 32
+ */
+#define IIS2DLPC_WAKE_ANGLE_COEF    32.0f
+/* 30° 对应的唤醒阈值：
+ * 
+ */
+#define IIS2DLPC_WK_THS_30DEG       16
+
+/* 唤醒持续时间：防止瞬时抖动误触发
+ * 1 LSB = 1 × 1/ODR
+ * 例如 ODR = 100Hz，则 1 LSB = 10ms
+ * 这里设置 2 LSB = 20ms
+ */
+#define IIS2DLPC_WAKE_DUR           2
 
 /* ---------- 6D 阈值 ---------- */
 /* 0 = 80°, 1 = 70°, 2 = 60°, 3 = 50°
@@ -65,7 +97,14 @@ extern "C" {
 #define IIS2DLPC_REG_OUT_Z_L            0x2C
 #define IIS2DLPC_REG_OUT_Z_H            0x2D
 #define IIS2DLPC_REG_TAP_THS_X          0x30
+#define IIS2DLPC_REG_WAKE_UP_THIS    	0x34
+#define IIS2DLPC_REG_WAKE_UP_DUR     	0x35
+#define IIS2DLPC_REG_FREE_FALL       	0x36
+#define IIS2DLPC_REG_WAKE_UP_SRC     	0x38
 #define IIS2DLPC_REG_SIXD_SRC           0x3A
+#define IIS2DLPC_REG_X_OFS_USR   		0x3C
+#define IIS2DLPC_REG_Y_OFS_USR   		0x3D
+#define IIS2DLPC_REG_Z_OFS_USR   		0x3E
 #define IIS2DLPC_REG_CTRL7              0x3F
 
 /* IIS2DLPC 器件 ID */
@@ -81,7 +120,11 @@ void  IIS2DLPC_ReadAccel(float *x, float *y, float *z);
 /* 计算相对水平面的倾角（度） */
 float IIS2DLPC_GetTiltAngle(void);
 
+//读取中断状态
+uint8_t IIS2DLPC_WakeUp_GetStatus(void);
 
+//设置唤醒角度阈值
+uint8_t IIS2DLPC_SetWakeAngle(float angle_deg);
 
 #ifdef __cplusplus
 }

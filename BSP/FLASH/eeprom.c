@@ -126,7 +126,8 @@ int flashReadFromEEPROM(void)
         return -1;
     }
 
-    if (magic != PARA_MAGIC_VALUE) {
+    if (magic != PARA_MAGIC_VALUE) 
+	{
         // 魔数不匹配，说明 EEPROM 没写过或数据无效 
 		flashDataInit();
         flashWriteToEEPROM();
@@ -191,7 +192,8 @@ void flashDataInit(void)
 	strcpy(stu_flash.mqttBroker,"z8k09jGpX5.mqtts.acc.cmcconenet.cn");
 	strcpy(stu_flash.productKey,"z8k09jGpX5");
 
-	stu_flash.updateIntervalmins=24*60/2;//计算出休眠时间
+	stu_flash.fAngle = 30.0;
+	stu_flash.updateIntervalmins = 24*60/2;//计算出休眠时间
 }
 
 

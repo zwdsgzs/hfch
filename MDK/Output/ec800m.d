@@ -54,13 +54,13 @@
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\i2c.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\tim.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\usart.h
+.\output\ec800m.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\sysclk.h
 .\output\ec800m.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\ec800m.o: ..\BSP\dataProcess.h
 .\output\ec800m.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\output\ec800m.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\output\ec800m.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\output\ec800m.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\output\ec800m.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -74,4 +74,3 @@
 .\output\ec800m.o: ..\BSP\ACCSPEED\IIS2DLP.h
 .\output\ec800m.o: ..\BSP\FLASH\eeprom.h
 .\output\ec800m.o: ..\BSP\LOWPOWER\lowpower.h
-.\output\ec800m.o: ..\BSP\4G\OneNet\token.h

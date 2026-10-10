@@ -65,7 +65,7 @@ void GPIO_Init(void)
 
   /*4G_DTR GPIO pins  */
   GPIO_InitStruct.Pin = LTE_DTR_PIN;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(LTE_DTR_PORT, &GPIO_InitStruct);
@@ -182,7 +182,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         case BAT_INT_PIN:   // PB5  - BQ35100 ALERT
 			stu_flag.uchBatterFlag = 1;
             break;
-        case ACC_INT_PIN:   // PB8  - 加速度计
+		case ACC_INT_PIN:   // PB8  - 加速度计
 			stu_flag.bAccFlag = true;
             break;
         case TH_INT_PIN:    // PB13 - 温湿度计

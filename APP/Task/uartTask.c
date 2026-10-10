@@ -8,6 +8,7 @@
 /* USER CODE END Header_appUartTask */
 void appUartTask(void *argument)
 {
+	osDelay(2000);
 	uartRcvStart(0);//使能串口接收
 
 	for(;;)
@@ -31,7 +32,11 @@ void appUartTask(void *argument)
             case 5:
                 if (ring_buf_available(&rb_usart5) > 0) 
 				{
+#if (DEBUG_UART5 == 1)
+					rcvAndSend();
+#else
                     Radarrcv();
+#endif
                 }
                 break;
             default:

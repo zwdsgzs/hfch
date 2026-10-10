@@ -191,7 +191,7 @@
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32L071xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\APP;..\BSP;..\BSP\MIDDLEWARE;..\BSP\CH4;..\BSP\H2S;..\BSP\RADAR;..\BSP\ACCSPEED;..\BSP\BATTER;..\BSP\TEMPHUM;..\BSP\4G;..\BSP\4G\OneNet;..\BSP\FLASH;..\BSP\LOWPOWER;..\DRIVER\STM32L0xx_HAL_Driver\Inc;..\DRIVER\CMSIS\Include;..\DRIVER\CMSIS\Device\ST\STM32L0xx\Include;..\FreeRTOS\Source\include;..\FreeRTOS\Source\CMSIS_RTOS_V2;..\FreeRTOS\Source\portable\RVDS\ARM_CM0</IncludePath>
+              <IncludePath>..\APP;..\BSP;..\BSP\MIDDLEWARE;..\BSP\CH4;..\BSP\H2S;..\BSP\RADAR;..\BSP\ACCSPEED;..\BSP\BATTER;..\BSP\TEMPHUM;..\BSP\4G;..\BSP\FLASH;..\BSP\LOWPOWER;..\DRIVER\STM32L0xx_HAL_Driver\Inc;..\DRIVER\CMSIS\Include;..\DRIVER\CMSIS\Device\ST\STM32L0xx\Include;..\FreeRTOS\Source\include;..\FreeRTOS\Source\CMSIS_RTOS_V2;..\FreeRTOS\Source\portable\RVDS\ARM_CM0</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -519,31 +519,6 @@
               <FileName>EC800M.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\4G\EC800M.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>BSP/4G/ONENET</GroupName>
-          <Files>
-            <File>
-              <FileName>hmac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\4G\OneNet\hmac.c</FilePath>
-            </File>
-            <File>
-              <FileName>md5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\4G\OneNet\md5.c</FilePath>
-            </File>
-            <File>
-              <FileName>token.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\4G\OneNet\token.c</FilePath>
-            </File>
-            <File>
-              <FileName>base64.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\4G\OneNet\base64.c</FilePath>
             </File>
           </Files>
         </Group>

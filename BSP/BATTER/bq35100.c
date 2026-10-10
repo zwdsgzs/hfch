@@ -76,9 +76,24 @@ int BQ35100_WaitInitComplete(uint32_t timeout_ms)
  *                  数据读取
  * ============================================================ */
 
+int BQ35100_ReadDeviceType(uint8_t *type)
+{
+    /* 1. 发 Control() 子命令 0x0001 (DEVICE_TYPE) */
+    if (BQ35100_SendControl(0x0001) != 0) {
+        return -1;
+    }
+
+    /* 2. 等待器件处理（数据手册未给明确延时，建议 1~10ms） */
+    HAL_Delay(5);
+
+    /* 3. 读 Control() 地址 0x00，取 1 字节 */
+    return bq35100_read(BQ35100_CMD_CONTROL, type, 1);
+}
+
 int BQ35100_ReadAccumulatedCapacity(void)
 {
     uint8_t buf[4];
+	int32_t used_uAh = 0;
 
     if (bq35100_read(BQ35100_CMD_ACCUMULATED_CAPACITY, buf, 4) != 0) {
         bq35100.error_capacity = 1;
@@ -92,9 +107,16 @@ int BQ35100_ReadAccumulatedCapacity(void)
         ((uint32_t)buf[1] << 8)  |
         ((uint32_t)buf[0]);
 
-	stu_sensor.unBatEle = bq35100.accumulated_capacity_uAh;
+	used_uAh = -(int32_t)bq35100.accumulated_capacity_uAh;//放电为负
 
-	stu_sensor.uchBattery = 100 - (unsigned char)((stu_sensor.unBatEle / 19000000) * 100);
+	if (used_uAh < 0) 
+	{
+		used_uAh = 0;
+	}
+
+	stu_sensor.unBatEle = used_uAh;
+
+	stu_sensor.uchBattery = 100 - (unsigned char)((used_uAh / 19000000.0f) * 100.0f);
 
     bq35100.error_capacity = 0;
     return 0;
@@ -196,20 +218,33 @@ void BQ35100_ReadAll(void)
 
 void BQ35100_Init(void)
 {
-    /* 1. 给 BQ35100 上电 */
+	BQ35100_ReadStatus();   /* 清 ALERT，确保 PB5 是高 */
+	osDelay(1);
+	stu_flag.uchBatterFlag = 0;
+
+    /*  给 BQ35100 上电 */
     GE_SET;
-    HAL_Delay(10);
+    osDelay(10);
 
-    /* 3. 等待 INITCOMP = 1（初始化完成） */
-    if (BQ35100_WaitInitComplete(500) != 0) {
-        /* 初始化超时，可在此加错误处理 */
-        return;
-    }
+	/*  等待 INITCOMP = 1（初始化完成） */
+	for (int i = 0; i < 6; ++i)
+	{
+		if (stu_flag.uchBatterFlag == 1)
+		{
+			stu_flag.uchBatterFlag = 0;
+			break;
+		}
+		if (i == 5)
+		{
+			return;/* 初始化超时*/
+		}
+		osDelay(500);
+	}
 
-    /* 4. 清除 ALERT（读 BatteryStatus 会清） */
+    /* 清除 ALERT（读 BatteryStatus 会清） */
     BQ35100_ReadStatus();
 
-    /* 5. 发送 GAUGE_START，开始累积放电量 */
+    /* 发送 GAUGE_START，开始累积放电量 */
     BQ35100_GaugeStart();
 }
 
