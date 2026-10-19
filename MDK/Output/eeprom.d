@@ -58,7 +58,6 @@
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\eeprom.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\eeprom.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\eeprom.o: ..\BSP\dataProcess.h
 .\output\eeprom.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\eeprom.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

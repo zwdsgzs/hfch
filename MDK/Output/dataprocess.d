@@ -58,7 +58,6 @@
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\dataprocess.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\dataprocess.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\dataprocess.o: ..\BSP\dataProcess.h
 .\output\dataprocess.o: ..\BSP\CH4\ch4.h
 .\output\dataprocess.o: ..\BSP\H2S\h2s.h

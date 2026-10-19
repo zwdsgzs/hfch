@@ -58,7 +58,6 @@
 .\output\sysclk.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\sysclk.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\sysclk.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\sysclk.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\sysclk.o: ..\BSP\dataProcess.h
 .\output\sysclk.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\sysclk.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

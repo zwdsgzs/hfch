@@ -2,9 +2,16 @@
 
 void PowerOn_4G(void)
 {
+	LTE_PWRKEY_RESET;
+//	LTE_RST_RESET;
+	LTE_DTR_RESET;
+	V3_6_POWER_RESET;
+	LTE_POWER_RESET;
+	osDelay(3000);
+
     LTE_POWER_SET;//上电
+	V3_6_POWER_SET;
 	LTE_PWRKEY_SET;
-	LTE_RST_RESET;
 	LTE_DTR_SET;
 	osDelay(35);
 	LTE_PWRKEY_RESET;
@@ -12,19 +19,40 @@ void PowerOn_4G(void)
 	LTE_RST_SET;
 	osDelay(700);
 	LTE_PWRKEY_SET;
+	osDelay(5000);//等待模块完全开机
+//	LTE_RST_SET;
+//LTE_POWER_SET;
+//osDelay(100);
+//V3_6_POWER_SET;
+//osDelay(300);
+//LTE_PWRKEY_RESET;
+//osDelay(800);
+//LTE_PWRKEY_SET;
+
+osDelay(5000);//等待模块完全开机
 }
 
 void PowerOff_4G(void)
 {
+	LTE_PWRKEY_SET;
+	LTE_POWER_SET;
+	V3_6_POWER_SET;
+	LTE_RST_SET;
+	LTE_DTR_SET;
+	osDelay(1000);
+
     LTE_PWRKEY_RESET;
 	osDelay(750);
 	LTE_PWRKEY_SET;
-	osDelay(3000);//等待模块完全关机
-	LTE_POWER_RESET;	
-	LTE_PWRKEY_RESET;
+	osDelay(10000);//等待模块完全关机
+
+	LTE_POWER_RESET;
 	LTE_RST_RESET;
 	LTE_DTR_RESET;
+	V3_6_POWER_RESET;
+	osDelay(3000);
 }
+
 
 void PowerRST_4G(void)
 {
@@ -132,8 +160,10 @@ void wkp_pin_Power_cfg(void)
 void Sleep(uint32_t minutes)
 {
     /* 清 MQTT 状态 */
-    stu_4G.get_frist_Mq_flg = 0;
-    stu_4G.opentop = false;
+    stu_4G.process = 0;
+	stu_4G.InitFlag = 0;
+    stu_4G.get_sub1_flg = false;
+	stu_4G.get_sub2_flg = false;
 
     /* 配置睡眠引脚 */
     sleep_pin_Power_cfg();

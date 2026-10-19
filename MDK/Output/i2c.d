@@ -58,7 +58,6 @@
 .\output\i2c.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\i2c.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\i2c.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\i2c.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\i2c.o: ..\BSP\dataProcess.h
 .\output\i2c.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\i2c.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

@@ -19,6 +19,7 @@ void appSlowTask(void *argument)
 ////-------------初始逻辑----------------------
 	Sensor_PowerOn();
 	stu_flag.bAccFlag = false;
+	BQ35100_ReadAccumulatedCapacity();//计算电量
 	IIS2DLPC_GetTiltAngle();
 	
 	for(;;)
@@ -32,12 +33,6 @@ void appSlowTask(void *argument)
 				HDC2010ReadTemp();
 				HDC2010ReadHumidity();
 			}
-			if (stu_flag.bAccFlag)
-			{
-				stu_flag.bAccFlag = false;
-				stu_flag.bUpport = true;
-				IIS2DLPC_GetTiltAngle();
-			}
 
 			if ((usCount >= 50) && (usCount < 300))
 			{
@@ -48,13 +43,14 @@ void appSlowTask(void *argument)
 					{
 					case 0:
 						stu_sensor.collectCnt = (usCount / 50) - 1;
-						BQ35100_ReadAccumulatedCapacity();
 						break;
 					case 1:
 						H2S_Read();
 						break;
 					case 2:
+#if (DEBUG_UART5 == 0)
 						LD8001_Read();
+#endif
 						break;
 					case 3:
 						HDC2010TriggerMeasurement();
@@ -67,22 +63,31 @@ void appSlowTask(void *argument)
 				}
 			}
 
+			if (usCount == 200)
+			{
+				stu_4G.process = 1;
+			}
+			else if (usCount == 300)
+			{
+				stu_4G.process = 2;
+			}
+
 			if (usCount % 5 == 0)
 			{
 				LED_POWER_TOGGLE;
 			}
 			//	运行超时				磁开关关机						4g上报完成
-			if ((usCount >= 500) || (stu_flag.uchMagnetFlag != 0) || (stu_4G.reported == 2))
+			if ((usCount >= 600) || (stu_flag.uchMagnetFlag != 0) || (stu_4G.process == 4))
 			{
-				usCount = 400;
-				stu_4G.reported = 0;
-				if (stu_sensor.uchLDCnt == 0)
-				{
-					Sleep(5);
-				}
-				else{
-					Sleep(stu_flash.updateIntervalmins);
-				}
+				usCount = 0;
+				stu_4G.process = 0;
+//				if (stu_sensor.uchLDCnt == 0)
+//				{
+//					Sleep(stu_flash.updateIntervalmins);
+//				}
+//				else{
+//					Sleep(5);
+//				}
 			}
 		}
 	}

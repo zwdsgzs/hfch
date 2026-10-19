@@ -36,7 +36,7 @@ extern ring_buffer_t rb_usart5;
 typedef struct{
 	unsigned char collectCnt;	//采集第几组数据
 
-	unsigned char uchBattery;
+	unsigned char uchBattery;	//电池电量
 
 	unsigned char uchReportCount;//每天上报次数
 	unsigned char uchLDCnt;	//如果雷达三次采集都是0，则上报雷达为0
@@ -44,17 +44,14 @@ typedef struct{
 	unsigned short usCH4;	//甲烷
 	unsigned short usH2S;	//硫化氢
 	unsigned short usLD;	//雷达液位
-	unsigned short usTemp;	//温度
+	short usTemp;	//温度
 	unsigned short usHum;	//湿度
 	unsigned short usAngle;	//倾角
-
-	unsigned short batter;	//电池电量
 	
-	unsigned short sH2S[5];	//硫化氢
-	unsigned short sLD[5];	//雷达液位
-	unsigned short sTemp[5];//温度
-	unsigned short sHum[5];	//湿度
-
+	unsigned short sH2S[6];	//硫化氢
+	unsigned short sLD[6];	//雷达液位
+	short sTemp[6];			//温度
+	unsigned short sHum[6];	//湿度
 	unsigned short sAngle[5];//倾角
 
 	unsigned int unBatEle;
@@ -81,5 +78,6 @@ double round_to_two_decimal_places(float number);
 uint16_t Modbus_CRC16(uint8_t* data, size_t length);
 
 unsigned short getusData(unsigned short usData[]);
+short getsData(short usData[]);
 
 #endif 

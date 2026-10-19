@@ -58,7 +58,6 @@
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\ec800m.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\ec800m.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\ec800m.o: ..\BSP\dataProcess.h
 .\output\ec800m.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\ec800m.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

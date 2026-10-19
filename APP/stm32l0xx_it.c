@@ -32,7 +32,27 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
+    volatile uint32_t fault_pc = 0;
+    volatile uint32_t fault_lr = 0;
 
+    uint32_t psp = __get_PSP();
+    uint32_t msp = __get_MSP();
+
+    /* 两个栈帧里的第 7 个字（偏移 24）都是出错时的 PC */
+    uint32_t pc_psp = ((uint32_t *)psp)[6];
+    uint32_t pc_msp = ((uint32_t *)msp)[6];
+
+    /* 哪个 PC 落在 Flash 代码段，就用哪个栈帧 */
+    if (pc_psp >= 0x08000000U && pc_psp < 0x10000000U) {
+        fault_pc = pc_psp;
+        fault_lr = ((uint32_t *)psp)[5];   // 出错时的 LR
+    } else {
+        fault_pc = pc_msp;
+        fault_lr = ((uint32_t *)msp)[5];
+    }
+
+    /* 调试时看这两个值即可 */
+    (void)fault_lr;
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {

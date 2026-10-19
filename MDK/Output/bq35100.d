@@ -58,7 +58,6 @@
 .\output\bq35100.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\bq35100.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\bq35100.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\bq35100.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\bq35100.o: ..\BSP\dataProcess.h
 .\output\bq35100.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\bq35100.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

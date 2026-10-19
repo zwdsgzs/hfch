@@ -1,42 +1,59 @@
 #include "main.h"
 
-
+int cnttttt = 0;
 void appNetTask(void *argument)
 {
 	osDelay(100);
     PowerOn_4G();
-	osDelay(5000);//等待模块启动（建议 3~5 秒）
-//                                                                                                                                                                                     
-
+	
+	EC800M_Poll_Rx();
+//	Init_4G();
+#if (DEBUG_UART5 == 1)
 	printf("start");
-
-//	if (stu_4G.InitFlag) 
-//	{
-//        stu_4G.get_frist_Mq_flg = 2;
-//        Mq_Sub_shadow();
-//        stu_4G.get_frist_Mq_flg = 1;
-//    }
-
+#endif
+	EC800M_Poll_Rx();
+			PowerOff_4G();
+	EC800M_Poll_Rx();
+			PowerOn_4G();
 	for(;;)
 	{
-//		/* 处理 URC（放在 AT_Send 之外的间隙） */
-//		EC800M_Poll_Rx();
+		if (stu_4G.InitFlag == 0)//初始化未成功，或者休眠后重连失败
+		{
+			PowerOff_4G();
+			EC800M_Poll_Rx();
+			PowerOn_4G();
+			EC800M_Poll_Rx();
+			Init_4G();
+			EC800M_Poll_Rx();
+			osDelay(3000);
+			
+		}
+//		else{
+//			switch (stu_4G.process)
+//			{
+//			case 1:
+//				if (stu_flag.bAccFlag)//盖子打开
+//				{
+//					Mq_Pub_open();
+//					stu_flag.bAccFlag = false;
+//				}
+//				break;
+//			case 2:
+//				Mq_Sub_shadow();
+//				stu_4G.process = 3;
+//				osDelay(2000);
+//				break;
+//			case 3:
+//				osDelay(2000);
+//				Mq_Pub_P();
+//				break;
+//			default:break;
+//			}
 
-//		/* 检查 MQTT 断线 */
-//		if (strstr(stu_4G.From4G, "+QMTSTAT")) {
-//			memset(stu_4G.From4G, 0, sizeof(stu_4G.From4G));
-//			stu_4G.From4G_N = 0;
-//			reConnect_4G();
+//			EC800M_Poll_Rx();
 //		}
 
-//		//上报数据
-//		if (stu_4G.reported == 1)
-//		{
-//			Mq_Pub_P();
-//			stu_4G.reported = 2;
-//		}
-		EC800M_Poll_Rx();
-		osDelay(50);
+		osDelay(1000);
 	}
 }
 

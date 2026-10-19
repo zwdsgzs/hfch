@@ -57,7 +57,6 @@
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\slowtask.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\slowtask.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\slowtask.o: ..\BSP\dataProcess.h
 .\output\slowtask.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\slowtask.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

@@ -43,14 +43,14 @@ void ring_buf_init(ring_buffer_t *rb)
 bool ring_buf_write(ring_buffer_t *rb, const uint8_t *data, uint16_t len)
 {
     uint16_t space = RING_BUF_SIZE - 1 - ring_buf_available(rb);
-    if (len > space) {
-        len = space;   // 丢弃多余数据，或者返回 false 让上层处理
-    }
+    uint16_t to_write = (len > space) ? space : len;
+
     for (uint16_t i = 0; i < len; i++) {
         rb->buffer[rb->head] = data[i];
         rb->head = (rb->head + 1) & (RING_BUF_SIZE - 1);
     }
-    return (len == space) ? false : true;
+
+    return (to_write == len);   // 全部写入才返回 true
 }
 
 // 返回实际读出的字节数
@@ -308,5 +308,38 @@ unsigned short getusData(unsigned short usData[])
 	}
 
 	return avg;
+}
+
+short getsData(short usData[])
+{
+    int   i;
+    int   max = 0;
+    int   min = 0;
+    int   num = 0;
+    long  sum = 0;
+    int   avg;
+
+    /* ---------- 1. 找最大值、最小值下标（有符号比较） ---------- */
+    for (i = 1; i < 5; ++i)
+    {
+        if (usData[i] > usData[max]) max = i;
+        if (usData[i] < usData[min]) min = i;
+    }
+
+    /* ---------- 2. 去掉 max、min，剩下的非 0 值求和 ---------- */
+    for (i = 0; i < 5; ++i)
+    {
+        if (i == max || i == min) continue;
+        if (usData[i] == 0)       continue;
+
+        sum += usData[i];
+        num++;
+    }
+
+    /* ---------- 3. 求平均 ---------- */
+    if (num == 0) return 0;
+
+    avg = (int)(sum / num);
+    return (short)avg;
 }
 

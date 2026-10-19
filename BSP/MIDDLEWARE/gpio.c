@@ -189,7 +189,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			stu_flag.uchTempHumFlag = 1;
             break;
         case MAGN_INT_PIN:  // PB12 - ´Å¿ª¹Ø
-			stu_flag.uchMagnetFlag = 1;
+            if (stu_flag.uchMagnetFlag == 1)
+            {
+                stu_flag.uchMagnetFlag = 0;
+            }
+            else{
+                stu_flag.uchMagnetFlag = 1;
+            }
             break;
         default:
             break;

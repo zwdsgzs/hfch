@@ -5,28 +5,28 @@ unsigned char ldreadbuff[] = {0x01, 0x03, 0x00, 0x01, 0x00, 0x01, 0xD5, 0xCA};
 void Radarrcv(void)
 {
 	unsigned char uchData[radarLength + 1] = {0};
-	unsigned char uchLength = 0;
+	unsigned short usLength = 0;
 	unsigned char uchDataN[3] = {0};
 
-	uchLength = ring_buf_available(&rb_usart5);
-	if (uchLength >= radarLength)
+	usLength = ring_buf_available(&rb_usart5);
+	if (usLength >= radarLength)
 	{
-		while (uchLength >= radarLength)
+		while (usLength >= radarLength)
 		{
 			ring_buf_peek_n(&rb_usart5, uchDataN, 3);
 
-			if(uchDataN[0] != 0x01 && uchDataN[1] != 0x03 && uchDataN[2] != 0x02)
+			if(uchDataN[0] == 0x01 && uchDataN[1] == 0x03 && uchDataN[2] == 0x02)
 			{
-				ring_buf_drop(&rb_usart5);
-			}
-			else{
 				ring_buf_read(&rb_usart5, uchData, radarLength);
 				praseRadarData(uchData);
 				ring_buf_clear(&rb_usart5);
 				break;
 			}
+			else{
+				ring_buf_drop(&rb_usart5);
+			}
 
-			uchLength = ring_buf_available(&rb_usart5);
+			usLength = ring_buf_available(&rb_usart5);
 		}
 	}
 }
@@ -55,14 +55,38 @@ void LD8001_Read(void)
 
 void rcvAndSend(void)
 {
-	unsigned char uchData[200] = {0};
-	unsigned char uchLength = 0;
+	HAL_StatusTypeDef st;
+	static unsigned char uchData[512] = {0};//dma在缓存区满溢后，会触发两次
+	unsigned short usLength = 0;
 
-	uchLength = ring_buf_available(&rb_usart5);
-	if (uchLength > 0)
+	usLength = ring_buf_available(&rb_usart5);
+	if (usLength > 0)
 	{
-		ring_buf_read(&rb_usart5, uchData, uchLength);
-		uartSendIT(1, uchData, uchLength);
+		ring_buf_read(&rb_usart5, uchData, usLength);
+
+		st = uartSendIT(1, uchData, usLength);
+		while (st == HAL_BUSY) {
+			osDelay(1);
+			st = uartSendIT(1, uchData, usLength);
+		}
+
+		/* 等真正发送完成，防止下次调用覆盖 uchData */
+		while (huart1.gState != HAL_UART_STATE_READY)
+		{
+			osDelay(1);
+		}
+
+//		st = uartSendIT(5, uchData, usLength);
+//		while (st == HAL_BUSY) {
+//			osDelay(1);
+//			st = uartSendIT(5, uchData, usLength);
+//		}
+//
+//		/* 等真正发送完成，防止下次调用覆盖 uchData */
+//		while (huart5.gState != HAL_UART_STATE_READY)
+//		{
+//			osDelay(1);
+//		}
 	}
 }
 

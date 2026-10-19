@@ -19,7 +19,6 @@ extern "C" {
 #include "gpio.h"
 #include "rtc.h"
 #include "sysclk.h"
-#include <cJSON.h>
 
 #include "dataProcess.h"
 
@@ -53,7 +52,7 @@ extern "C" {
 #endif
 
 typedef struct{
-	bool bUpport;//上报标志，接收到加速度后，等待上报时上报
+//	bool bUpport;//上报标志，接收到加速度后，等待上报时上报
 
 	bool bAccFlag;//加速计中断标志
 	bool bRtcwkp;//RTC中断标志
@@ -63,10 +62,6 @@ typedef struct{
 	unsigned char uchMagnetFlag;//磁开关标志
 }stuFlagDef;
 extern stuFlagDef  stu_flag;
-
-void runMode(void);
-void stopMode(void);
-void cfgMode(void);
 
 //队列句柄
 extern QueueHandle_t xUartEvtQueue;

@@ -9,8 +9,6 @@
 #ifndef RTE_COMPONENTS_H
 #define RTE_COMPONENTS_H
 
-/* MDK-Packs::Data Exchange:JSON:cJSON@1.7.7 */
-#define RTE_DataExchange_JSON_cJSON     /* cJSON */
 
 
 #endif /* RTE_COMPONENTS_H */

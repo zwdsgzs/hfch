@@ -760,9 +760,6 @@
         <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
-        <Group>
-          <GroupName>::Data Exchange</GroupName>
-        </Group>
       </Groups>
     </Target>
   </Targets>
@@ -772,12 +769,6 @@
     <components>
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="6.1.0" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.7.36" url="https://www.keil.com/pack/" vendor="ARM" version="6.1.0"/>
-        <targetInfos>
-          <targetInfo name="hufenchi"/>
-        </targetInfos>
-      </component>
-      <component Cclass="Data Exchange" Cgroup="JSON" Csub="cJSON" Cvendor="MDK-Packs" Cversion="1.7.7" condition="ARMCC">
-        <package name="cJSON" schemaVersion="1.4" url="https://github.com/MDK-Packs/Pack/raw/master/cJSON/" vendor="MDK-Packs" version="1.0.0"/>
         <targetInfos>
           <targetInfo name="hufenchi"/>
         </targetInfos>

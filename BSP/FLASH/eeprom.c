@@ -3,7 +3,6 @@
 flshDataDef stu_flash = {0};
 flshDataDef stu_flashjson = {0};
 
-
 // EEPROM 操作期间，必须保证没有其他中断尝试访问 NVM，否则可能导致程序卡死。通过关中断保护
 /*-------------------------------------------------*/
 /*函数名：内部eeprom写功能                          */
@@ -23,33 +22,52 @@ HAL_StatusTypeDef EEPROM_WriteData(uint32_t Address, uint32_t *wData, uint32_t l
         return HAL_ERROR;
     }
 
-    __disable_irq(); // 进入临界区，防止其他中断打断 NVM 操作[citation:10]
+	/* 解锁 */
+	if (HAL_FLASHEx_DATAEEPROM_Unlock() != HAL_OK) 
+	{
+		return HAL_ERROR;
+	}
+	
+	/* 清掉上电残留的 OPTVERR / EOP / 各种 ERROR 标志 */
+	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP      |
+						   FLASH_FLAG_WRPERR   |
+						   FLASH_FLAG_PGAERR   |
+						   FLASH_FLAG_SIZERR   |
+						   FLASH_FLAG_OPTVERR  |
+						   FLASH_FLAG_RDERR    |
+						   FLASH_FLAG_FWWERR   |
+						   FLASH_FLAG_NOTZEROERR);
 
-    HAL_FLASHEx_DATAEEPROM_Unlock();
+	/* 1) 先按双字粒度擦除整个待写区间 */
+	for (i = 0U; i < len; i += 2U) {
+		if (HAL_FLASHEx_DATAEEPROM_Erase(Address + i * 4U) != HAL_OK) {
+			status = HAL_ERROR;
+			HAL_Delay(1);
+			break;
+		}
+	}
+	if (status != HAL_OK) return status;
 
-    for (i = 0; i < len; i++) {
-        /* 关键修正：先擦除目标地址，再写入。EEPROM 擦除单位是一个字（4字节）[citation:1][citation:6]。 */
-        status = HAL_FLASHEx_DATAEEPROM_Erase(Address + i * 4);
-        if (status != HAL_OK) {
-            break;
-        }
+	/* 2) 再按字粒度写入 */
+	for (i = 0U; i < len; i++) {
+		if (HAL_FLASHEx_DATAEEPROM_Program(FLASH_TYPEPROGRAMDATA_WORD,
+										   Address + i * 4U,
+										   wData[i]) != HAL_OK) {
+			status = HAL_ERROR;
+			break;
+		}
+	}
 
-        status = HAL_FLASHEx_DATAEEPROM_Program(FLASH_TYPEPROGRAMDATA_WORD, 
-                                                Address + i * 4, 
-                                                wData[i]);
-        if (status != HAL_OK) {
-            break;
-        }
-
-        /* 验证写入结果 */
-        if (*(uint32_t*)(Address + i * 4) != wData[i]) {
+	/* 回读校验（整段） */
+    for (i = 0U; i < len; i++) {
+        if (*(__IO uint32_t *)(Address + i * 4U) != wData[i]) {
             status = HAL_ERROR;
             break;
         }
     }
 
+	/* 上锁 */
     HAL_FLASHEx_DATAEEPROM_Lock();
-    __enable_irq(); // 退出临界区
 
     return status;
 }
@@ -158,26 +176,17 @@ int flashReadFromEEPROM(void)
 
 int flashWriteToEEPROM(void)
 {
+    /* 拼成一个大缓冲区：4 字节魔数 + 200 字节结构体 */
+    uint8_t buf[4 + sizeof(flshDataDef)];
+
     uint32_t magic = PARA_MAGIC_VALUE;
-    uint32_t word_len;
-    uint32_t *p;
-    uint8_t buf[sizeof(flshDataDef)];
+    memcpy(buf, &magic, 4);                                    /* 前 4 字节：魔数 */
+    memcpy(buf + 4, &stu_flash, sizeof(flshDataDef));          /* 后面：数据 */
 
-    /* 1. 先把结构体拷贝到临时缓冲区，避免写入过程中被其他中断修改 */
-    memcpy(buf, &stu_flash, sizeof(flshDataDef));
-
-    /* 2. 写入魔数 */
-    if (EEPROM_WriteData(PARA_MAGIC_ADDR, &magic, 1) != HAL_OK) {
-        return -1;
-    }
-
-    /* 3. 写入结构体数据
-     *    sizeof(flshDataDef) = 200，200 / 4 = 50 个字
-     */
-    word_len = sizeof(flshDataDef) / 4;
-    p = (uint32_t *)buf;
-
-    if (EEPROM_WriteData(PARA_DATA_ADDR, p, word_len) != HAL_OK) {
+    /* 一次调用：从 0x08080000 开始，写 4+200 = 204 字节 */
+    uint32_t total_words = (4 + sizeof(flshDataDef)) / 4;      /* 51 个字 */
+	
+	if (EEPROM_WriteData(PARA_MAGIC_ADDR, (uint32_t *)buf, total_words) != HAL_OK) {
         return -1;
     }
 

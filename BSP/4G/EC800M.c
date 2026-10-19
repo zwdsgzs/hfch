@@ -6,6 +6,11 @@ extern UART_HandleTypeDef huart1;       /* 4G 模块串口*/
 static unsigned char EC800M_UART_Send(const uint8_t *data, uint16_t len);
 static unsigned char EC800M_Publish  (const char *topic, const char *payload);
 
+/* 全局共用缓冲区（在 ec800m.c 顶部） */
+uint8_t  tmp[RING_BUF_SIZE];
+char Topic[100];
+char json_str[300];
+//char payload[280];
 /* ============================================================================
  *                              接收解析
  * ========================================================================== */
@@ -17,7 +22,6 @@ static unsigned char EC800M_Publish  (const char *topic, const char *payload);
  */
 void EC800M_Poll_Rx(void)
 {
-    uint8_t  tmp[RING_BUF_SIZE];
     uint16_t n = ring_buf_read(&rb_usart1, tmp, sizeof(tmp));
     static unsigned char Data[2] = {0};
 #if (DEBUG_UART5 == 1)
@@ -89,7 +93,11 @@ unsigned char AT_Send(char *str, char *Find, unsigned char errN)
     {
         switch (state)
         {
-            case STATE_SEND_CMD:
+			case STATE_SEND_CMD:
+				ring_buf_clear(&rb_usart1);
+				memset(stu_4G.From4G, 0, sizeof(stu_4G.From4G));
+				stu_4G.From4G_N    = 0;
+				stu_4G.isFrom4G_OK = 0;
 #if (DEBUG_UART5 == 1)
                 printf("send: %s", str);
 #endif
@@ -108,22 +116,30 @@ unsigned char AT_Send(char *str, char *Find, unsigned char errN)
                 break;
 
 			case STATE_WAIT_RESPONSE:
-				for (int i = 0; i < 36; i++) {     // 36 * 50ms = 1800ms
+				for (int i = 0; i < 20; i++) {          // 最多 2000ms
 					EC800M_Poll_Rx();
-					if (stu_4G.isFrom4G_OK) break;   // 收到完整帧立刻退出
-					osDelay(50);                   // ★ 必须让出 CPU
+
+					/* 只有当接收缓冲里真的出现关键字才提前结束 */
+					if (stu_4G.From4G_N > 0 &&
+						strstr((const char *)stu_4G.From4G, (const char *)Find)) {
+						return 1;                        // 成功，直接返回
+					}
+					osDelay(100);                        // 让出 CPU
 				}
-                state = STATE_CHECK_RESPONSE;
+				state = STATE_CHECK_RESPONSE;            // 2s 到，再去判断一次
                 break;
 
             case STATE_CHECK_RESPONSE:
                 EC800M_Poll_Rx();
                 if (strstr((const char *)stu_4G.From4G, (const char *)Find)) {
                     return 1;
-                } else {
-                    retry++;
-                    state = STATE_SEND_CMD;
-                }
+                } 
+				/* 没匹配上，清状态避免下一轮误判 */
+				stu_4G.isFrom4G_OK = 0;
+				stu_4G.From4G_N    = 0;
+				memset(stu_4G.From4G, 0, sizeof(stu_4G.From4G));
+				retry++;
+				state = STATE_SEND_CMD;
                 break;
 
             default: break;
@@ -149,8 +165,14 @@ unsigned char AT_Send_2(char *str, char *Find1, char *Find2, unsigned char errN)
     {
         switch (state)
         {
-            case STATE_SEND_CMD:
-                printf("%s", str);
+			case STATE_SEND_CMD:
+				ring_buf_clear(&rb_usart1);
+				memset(stu_4G.From4G, 0, sizeof(stu_4G.From4G));
+				stu_4G.From4G_N    = 0;
+				stu_4G.isFrom4G_OK = 0;
+#if (DEBUG_UART5 == 1)
+                printf("send: %s", str);
+#endif
 
                 if (EC800M_UART_Send((uint8_t *)str, strlen(str)) == 0) {
                     retry++;
@@ -166,12 +188,18 @@ unsigned char AT_Send_2(char *str, char *Find1, char *Find2, unsigned char errN)
                 break;
 
             case STATE_WAIT_RESPONSE:
-                for (int i = 0; i < 36; i++) {     // 36 * 50ms = 1800ms
-					EC800M_Poll_Rx();
-					if (stu_4G.isFrom4G_OK) break;   // 收到完整帧立刻退出
-					osDelay(50);                   // ★ 必须让出 CPU
-				}
-                state = STATE_CHECK_RESPONSE;
+                for (int i = 0; i < 20; i++) {          // 最多 2000ms
+                    EC800M_Poll_Rx();
+
+                    /* 只有两个关键字都出现才提前结束，否则继续等 */
+                    if (stu_4G.From4G_N > 0 &&
+                        strstr((const char *)stu_4G.From4G, (const char *)Find1) &&
+                        strstr((const char *)stu_4G.From4G, (const char *)Find2)) {
+                        return 1;                       // 匹配成功，直接返回
+                    }
+                    osDelay(100);                       // 让出 CPU
+                }
+                state = STATE_CHECK_RESPONSE;           // 2s 到，最后再判一次
                 break;
 
             case STATE_CHECK_RESPONSE:
@@ -179,10 +207,13 @@ unsigned char AT_Send_2(char *str, char *Find1, char *Find2, unsigned char errN)
                 if (strstr((const char *)stu_4G.From4G, (const char *)Find1) &&
                     strstr((const char *)stu_4G.From4G, (const char *)Find2)) {
                     return 1;
-                } else {
-                    retry++;
-                    state = STATE_SEND_CMD;
-                }
+                } 
+				/* 没匹配上，清状态，避免下一轮误判 */
+                stu_4G.isFrom4G_OK = 0;
+                stu_4G.From4G_N    = 0;
+                memset(stu_4G.From4G, 0, sizeof(stu_4G.From4G));
+                retry++;
+                state = STATE_SEND_CMD;
                 break;
 
             default: break;
@@ -201,40 +232,63 @@ unsigned char AT_Send_2(char *str, char *Find1, char *Find2, unsigned char errN)
  */
 static unsigned char EC800M_Publish(const char *topic, const char *payload)
 {
-    char cmd[AT_BUF_SIZE];
     int  len = (int)strlen(payload);
 
     /* 步骤 1：发命令 + 长度 */
-    snprintf(cmd, sizeof(cmd),
+    snprintf(stu_4G.AT_Buff, sizeof(stu_4G.AT_Buff),
              "AT+QMTPUBEX=0,1,1,0,\"%s\",%d\r\n", topic, len);
+#if (DEBUG_UART5 == 1)
+    printf("send: %s", stu_4G.AT_Buff);
+#endif
 
     ring_buf_clear(&rb_usart1);
     memset(stu_4G.From4G, 0, sizeof(stu_4G.From4G));
     stu_4G.From4G_N   = 0;
     stu_4G.isFrom4G_OK = 0;
 
-    if (EC800M_UART_Send((uint8_t *)cmd, strlen(cmd)) == 0) return 0;
+    if (EC800M_UART_Send((uint8_t *)stu_4G.AT_Buff, strlen(stu_4G.AT_Buff)) == 0) 
+		return 0;
 
     /* 等待 '>' 提示符 */
 	for (int i = 0; i < 60; i++) 
 	{     // 60 * 50ms = 3000ms
 		EC800M_Poll_Rx();
-		if (strchr(stu_4G.From4G, '>')) break;
+		if (strchr(stu_4G.From4G, '>')) 
+			break;
 		osDelay(50);
 	}
 
-    if (!strchr(stu_4G.From4G, '>')) return 0;
+    if (!strchr(stu_4G.From4G, '>')) 
+		return 0;
+
+	/*清掉步骤 1 的缓冲，避免下面匹配到命令回显 */
+    ring_buf_clear(&rb_usart1);
+    memset(stu_4G.From4G, 0, sizeof(stu_4G.From4G));
+    stu_4G.From4G_N    = 0;
+    stu_4G.isFrom4G_OK = 0;
 
     /* 步骤 2：发 payload */
-    if (EC800M_UART_Send((uint8_t *)payload, len) == 0) return 0;
+#if (DEBUG_UART5 == 1)
+	printf("send payload(%d): %s\n", len, payload);
+#endif
+    if (EC800M_UART_Send((uint8_t *)payload, len) == 0) 
+		return 0;
 
     /* 等待发布结果 */
 	for (int i = 0; i < 160; i++) 
 	{     // 160 * 50ms = 8000ms
 		EC800M_Poll_Rx();
-		if (strstr(stu_4G.From4G, "+QMTPUBEX") ||
-            strstr(stu_4G.From4G, "+QMTRECV")) {
-            return 1;
+		if (strstr((const char *)stu_4G.From4G, "ERROR"))    
+		{
+			return 0;
+		}
+		if (strstr(stu_4G.From4G, "+QMTPUBEX")) 
+		{
+			if (strstr((const char *)stu_4G.From4G, ",0\r\n"))
+			{
+				return 1;
+			}
+            break;
         }
 		osDelay(50);
 	}
@@ -302,10 +356,12 @@ unsigned char Init_4G(void)
     unsigned char Result = 0;
     unsigned char buff[20];
     uint8_t       count  = 20;
-    int  ret = 0;
 
     /* ---------- 1. AT 测试 ---------- */
     Result = AT_Send("AT\r\n", "OK", 8);
+    if (Result == 0) goto Mqtt_Fail;
+
+	Result = AT_Send("ATE0\r\n", "OK", 8);
     if (Result == 0) goto Mqtt_Fail;
 
     /* ---------- 2. 获取 ICCID / SN ---------- */
@@ -343,8 +399,8 @@ unsigned char Init_4G(void)
     }
 
     /* ---------- 4. 断开旧的 MQTT 连接 ---------- */
-    AT_Send("AT+QMTDISC=0\r\n",  "OK", 1);
-    osDelay(1000);
+//    AT_Send("AT+QMTDISC=0\r\n",  "OK", 1);
+//    osDelay(1000);
     AT_Send("AT+QMTCLOSE=0\r\n", "OK", 1);
     osDelay(1000);
 
@@ -360,6 +416,9 @@ unsigned char Init_4G(void)
     sprintf(stu_4G.AT_Buff, "AT+QMTCFG=\"recv/mode\",0,0,1\r\n");
     Result = AT_Send(stu_4G.AT_Buff, "OK", 5);
     if (Result == 0) goto Mqtt_Fail;
+	sprintf(stu_4G.AT_Buff, "AT+QMTCFG=\"keepalive\",0,60\r\n");
+    Result = AT_Send(stu_4G.AT_Buff, "OK", 5);
+    if (Result == 0) goto Mqtt_Fail;
     sprintf(stu_4G.AT_Buff, "AT+QMTCFG=\"onenet\",0,\"%s\",\"%s\"\r\n",
                     stu_flash.productKey,
                     stu_flash.deviceSecret);
@@ -373,86 +432,25 @@ unsigned char Init_4G(void)
     if (Result == 0) goto Mqtt_Fail;
 
     /* ---------- 8. 生成 OneNET Token 并连接 ---------- */
-    {
-        if (ret > 0)
-        {
-            memset(stu_4G.AT_Buff, 0, sizeof(stu_4G.AT_Buff));
-            sprintf(stu_4G.AT_Buff, "AT+QMTCONN=0,\"%s\"\r\n",
-                    stu_flash.deviceName);
-            Result = AT_Send_2(stu_4G.AT_Buff, "OK", "QMTCONN", 8);
-            if (Result == 0) goto Mqtt_Fail;
-        }
-    }
+    memset(stu_4G.AT_Buff, 0, sizeof(stu_4G.AT_Buff));
+    sprintf(stu_4G.AT_Buff, "AT+QMTCONN=0,\"%s\"\r\n",
+            stu_flash.deviceName);
+    Result = AT_Send_2(stu_4G.AT_Buff, "OK", "QMTCONN", 8);
+    if (Result == 0) goto Mqtt_Fail;
 
     if (Result == 1)
     {
-        stu_4G.InitFlag = 1;
-        return 1;
-    }
-
-Mqtt_Fail:
-    stu_4G.InitFlag = 0;
-    AT_Send("AT+CFUN=1,1\r\n", "OK", 2);
-    return 0;
-}
-
-/* ============================================================================
- *                              4G 重连
- * ========================================================================== */
-
-unsigned char reConnect_4G(void)
-{
-    unsigned char Result = 0;
-    unsigned char buff[20];
-
-    int  ret = 0;
-
-    stu_4G.notsigal = true;
-    stu_4G.CSQ      = 0;
-
-    for (int i = 0; i < 10; ++i)
-    {
-        Result = AT_Send("AT+CSQ\r\n", "CSQ", 10);
-        if (Result == 0) goto Mqtt_Fail;
-
-        if (Result == 1)
-        {
-            memset(buff, 0, sizeof(buff));
-            if (strstr((const char *)stu_4G.From4G, "+CSQ: "))
-            {
-                char *index = strstr((const char *)stu_4G.From4G, "+CSQ: ");
-                buff[0] = *(index + 6);
-                buff[1] = *(index + 7);
-                stu_4G.CSQ = atoi((const char *)buff);
-            }
-        }
-        if ((stu_4G.CSQ > 1) && (stu_4G.CSQ < 99)) {
-            stu_4G.notsigal = false;
-            break;
-        }
-    }
-    if (stu_4G.notsigal) return 0;
-
-    memset(stu_4G.AT_Buff, 0, sizeof(stu_4G.AT_Buff));
-    sprintf(stu_4G.AT_Buff, "AT+QMTOPEN=0,\"%s\",1883\r\n", stu_flash.mqttBroker);
-    Result = AT_Send_2(stu_4G.AT_Buff, "OK", "QMTOPEN", 3);
-    if (Result == 0) goto Mqtt_Fail;
-	
-    {
-        if (ret > 0)
-        {
-            memset(stu_4G.AT_Buff, 0, sizeof(stu_4G.AT_Buff));
-            sprintf(stu_4G.AT_Buff, "AT+QMTCFG=\"onenet\",0,\"%s\",\"%s\"\r\n",
-                    stu_flash.productKey,
-                    stu_flash.deviceSecret);
-            Result = AT_Send_2(stu_4G.AT_Buff, "OK", "QMTCONN", 3);
-            if (Result == 0) goto Mqtt_Fail;
-        }
-    }
-
-    if (Result == 1) {
-        stu_4G.InitFlag = 1;
-        return 1;
+        /* 检查 +QMTCONN: 0,0,x 中的 x，0=成功，其它=失败 */
+		if (strstr((const char *)stu_4G.From4G, "+QMTCONN: 0,0,0") != NULL)
+		{
+			stu_4G.InitFlag = 1;
+			return 1;
+		}
+		else
+		{
+			/* 比如 +QMTCONN: 0,0,4 */
+			goto Mqtt_Fail;
+		}
     }
 
 Mqtt_Fail:
@@ -467,30 +465,50 @@ Mqtt_Fail:
 
 void Mq_Sub_shadow(void)
 {
-    char Topic[200], Topic1[200];
-    unsigned char payload[80] =
-        "{\"id\":\"12\",\"version\":\"1.0\",\"params\":[\"HeartFreq\",\"Latitude\",\"Longitude\"]}";
+    const char *shadow_payload = "{\"id\":\"12\",\"version\":\"1.0\",\"params\":[\"HeartFreq\",\"Latitude\",\"Longitude\"]}";       
 
     unsigned char uchFlashCnt = 0;
 
-    if (stu_4G.get_frist_Mq_flg == 2)
+    if (!stu_4G.get_sub1_flg)
     {
         memset(stu_4G.AT_Buff, 0, sizeof(stu_4G.AT_Buff));
-        memset(Topic1, 0, sizeof(Topic1));
-        sprintf(Topic1, "$sys/%s/%s/thing/property/desired/get/reply",
+        memset(Topic, 0, sizeof(Topic));
+        sprintf(Topic, "$sys/%s/%s/thing/property/desired/get/reply",
                 stu_flash.productKey, stu_flash.deviceName);
-        sprintf(stu_4G.AT_Buff, "AT+QMTSUB=0,1,\"%s\",1\r\n", Topic1);
+        sprintf(stu_4G.AT_Buff, "AT+QMTSUB=0,1,\"%s\",1\r\n", Topic);
         AT_Send_2(stu_4G.AT_Buff, "OK", "+QMTSUB", 8);
-        stu_4G.get_frist_Mq_flg++;
+        stu_4G.get_sub1_flg = true;
     }
 
     memset(Topic, 0, sizeof(Topic));
     sprintf(Topic, "$sys/%s/%s/thing/property/desired/get",
             stu_flash.productKey, stu_flash.deviceName);
 
-    if (EC800M_Publish(Topic, (const char *)payload) == 0) {
+    if (EC800M_Publish(Topic, (const char *)shadow_payload) == 0) {
         return;
     }
+
+	/* 先看 From4G 里是不是已经有了（同一帧一起到） */
+	if (strstr((const char *)stu_4G.From4G, "+QMTRECV") == NULL)
+	{
+		/* 单独等 +QMTRECV，最多 5 秒 */
+		ring_buf_clear(&rb_usart1);
+		memset(stu_4G.From4G, 0, sizeof(stu_4G.From4G));
+		stu_4G.From4G_N    = 0;
+		stu_4G.isFrom4G_OK = 0;
+
+		for (int i = 0; i < 100; i++) // 100 * 50ms = 5s
+		{           
+		   EC800M_Poll_Rx();
+		   if (strstr((const char *)stu_4G.From4G, "+QMTRECV"))
+			   break;
+		   osDelay(50);
+		}
+	}
+	if (!strstr((const char *)stu_4G.From4G, "+QMTRECV"))
+	{
+        return;                                // 服务器没下发，算了
+	}
 
     char *result = extract_content(stu_4G.From4G);
     if (result != NULL)
@@ -530,82 +548,94 @@ void Mq_Sub_shadow(void)
 
 void Mq_Pub_P(void)
 {
-    char Topic[200];
-    char payload[400];
     osDelay(1000);
 
-    if (stu_4G.get_frist_Mq_flg == 1)
+    if (!stu_4G.get_sub2_flg)
     {
-        if (!stu_4G.opentop)
-        {
-            memset(stu_4G.AT_Buff, 0, sizeof(stu_4G.AT_Buff));
-            memset(Topic, 0, sizeof(Topic));
-            sprintf(Topic, "$sys/%s/%s/thing/property/post/reply",
-                    stu_flash.productKey, stu_flash.deviceName);
-            sprintf(stu_4G.AT_Buff, "AT+QMTSUB=0,1,\"%s\",1\r\n", Topic);
-            if (AT_Send_2(stu_4G.AT_Buff, "OK", "+QMTSUB", 8) == 0) {
-                return;
-            }
+        memset(stu_4G.AT_Buff, 0, sizeof(stu_4G.AT_Buff));
+        memset(Topic, 0, sizeof(Topic));
+
+        snprintf(Topic, sizeof(Topic),
+                 "$sys/%s/%s/thing/property/post/reply",
+                 stu_flash.productKey, stu_flash.deviceName);
+
+        snprintf(stu_4G.AT_Buff, sizeof(stu_4G.AT_Buff),
+                 "AT+QMTSUB=0,1,\"%s\",1\r\n", Topic);
+
+        if (AT_Send_2(stu_4G.AT_Buff, "OK", "+QMTSUB", 8) == 0) {
+            return;
         }
-        stu_4G.get_frist_Mq_flg++;
+        stu_4G.get_sub2_flg = true;
     }
 
-    cJSON *root   = cJSON_CreateObject();
-    cJSON *params = cJSON_CreateObject();
-
-    cJSON_AddStringToObject(root, "id", "12");
-    cJSON_AddStringToObject(root, "version", "1.0");
-
+    /* ---------- 数据限幅与处理 ---------- */
     if (stu_sensor.usCH4 > 100) stu_sensor.usCH4 = 100;
-    cJSON *CH4_obj = cJSON_CreateObject();
-    cJSON_AddNumberToObject(CH4_obj, "value", stu_sensor.usCH4);
-    cJSON_AddItemToObject(params, "CH4", CH4_obj);
 
     stu_sensor.usH2S = getusData(stu_sensor.sH2S);
     if (stu_sensor.usH2S > 100) stu_sensor.usH2S = 100;
-    cJSON *H2S_obj = cJSON_CreateObject();
-    cJSON_AddNumberToObject(H2S_obj, "value", stu_sensor.usH2S);
-    cJSON_AddItemToObject(params, "H2S", H2S_obj);
 
     stu_sensor.usLD = getusData(stu_sensor.sLD);
     if (stu_sensor.usLD == 0) stu_sensor.uchLDCnt++;
     else                      stu_sensor.uchLDCnt = 0;
-    cJSON *Radar_obj = cJSON_CreateObject();
-    cJSON_AddNumberToObject(Radar_obj, "value", stu_sensor.usLD);
-    cJSON_AddItemToObject(params, "Radar", Radar_obj);
 
-    if (stu_sensor.batter > 100) stu_sensor.batter = 100;
-    cJSON *Battery_obj = cJSON_CreateObject();
-    cJSON_AddNumberToObject(Battery_obj, "value", stu_sensor.batter);
-    cJSON_AddItemToObject(params, "Battery", Battery_obj);
+	stu_sensor.usTemp = getsData(stu_sensor.sTemp);
+    if (stu_sensor.usTemp > 1000) stu_sensor.usTemp = 1000;
+    else if (stu_sensor.usTemp < -400)   stu_sensor.usTemp = -400;
+
+	stu_sensor.usHum = getusData(stu_sensor.sHum);
+    if (stu_sensor.usHum > 1000) stu_sensor.usHum = 1000;
+
+	stu_sensor.usAngle = getusData(stu_sensor.sAngle);
+    if (stu_sensor.usAngle > 1800) stu_sensor.usAngle = 1800;
+
+    if (stu_sensor.uchBattery > 100) stu_sensor.uchBattery = 100;
 
     if (stu_flash.dbLon < 0)   stu_flash.dbLon = 0;
     if (stu_flash.dbLon > 180) stu_flash.dbLon = 180;
-    cJSON *Longitude_obj = cJSON_CreateObject();
-    cJSON_AddNumberToObject(Longitude_obj, "value", stu_flash.dbLon);
-    cJSON_AddItemToObject(params, "Longitude", Longitude_obj);
 
-    if (stu_flash.dbLat < 0)  stu_flash.dbLat = 0;
-    if (stu_flash.dbLat > 90) stu_flash.dbLat = 90;
-    cJSON *Latitude_obj = cJSON_CreateObject();
-    cJSON_AddNumberToObject(Latitude_obj, "value", stu_flash.dbLat);
-    cJSON_AddItemToObject(params, "Latitude", Latitude_obj);
+    if (stu_flash.dbLat < 0)   stu_flash.dbLat = 0;
+    if (stu_flash.dbLat > 90)  stu_flash.dbLat = 90;
 
-    cJSON_AddItemToObject(root, "params", params);
+    /* ---------- 自己拼 JSON ---------- */
+    int json_len = snprintf(json_str, sizeof(json_str),
+        "{\"id\":\"12\",\"version\":\"1.0\",\"params\":{"
+        "\"CH4\":{\"value\":%u},"
+        "\"H2S\":{\"value\":%u},"
+		"\"Temp\":{\"value\":%d},"
+		"\"Humidity\":{\"value\":%u},"
+		"\"Angle\":{\"value\":%u},"
+        "\"Radar\":{\"value\":%u},"
+        "\"Battery\":{\"value\":%u},"
+        "\"Longitude\":{\"value\":%.6f},"
+        "\"Latitude\":{\"value\":%.6f}"
+        "}}",
+        stu_sensor.usCH4,
+        stu_sensor.usH2S,
+		stu_sensor.usTemp,
+		stu_sensor.usHum,
+		stu_sensor.usAngle,
+        stu_sensor.usLD,
+        stu_sensor.uchBattery,
+        stu_flash.dbLon,
+        stu_flash.dbLat);
 
-    char *json_str = cJSON_PrintUnformatted(root);
-    memset(payload, 0, sizeof(payload));
-    strcat(payload, json_str);
-    free(json_str);
-    cJSON_Delete(root);
+    if (json_len < 0 || json_len >= (int)sizeof(json_str)) {
+        /* 缓冲区不够或格式化失败 */
+        return;
+    }
 
+    /* ---------- 拼 topic ---------- */
     memset(Topic, 0, sizeof(Topic));
-    sprintf(Topic, "$sys/%s/%s/thing/property/post",
-            stu_flash.productKey, stu_flash.deviceName);
+    snprintf(Topic, sizeof(Topic),
+             "$sys/%s/%s/thing/property/post",
+             stu_flash.productKey, stu_flash.deviceName);
 
+    /* ---------- 发布条件 ---------- */
     if ((stu_sensor.uchLDCnt == 0) || (stu_sensor.uchLDCnt == 3))
     {
-        EC800M_Publish(Topic, payload);
+        EC800M_Publish(Topic, json_str);
+		osDelay(1000);
+		stu_4G.process = 4;
         if (stu_sensor.uchLDCnt == 3) {
             stu_sensor.uchLDCnt = 0;
         }
@@ -618,11 +648,9 @@ void Mq_Pub_P(void)
 
 void Mq_Pub_open(void)
 {
-    char Topic[200];
-    char payload[400];
     osDelay(1000);
 
-    if (!stu_4G.opentop)
+    if (!stu_4G.get_sub2_flg)
     {
         memset(stu_4G.AT_Buff, 0, sizeof(stu_4G.AT_Buff));
         memset(Topic, 0, sizeof(Topic));
@@ -632,32 +660,35 @@ void Mq_Pub_open(void)
         if (AT_Send_2(stu_4G.AT_Buff, "OK", "+QMTSUB", 8) == 0) {
             return;
         }
-        stu_4G.opentop = true;
+        stu_4G.get_sub2_flg = true;
     }
 
-    cJSON *root   = cJSON_CreateObject();
-    cJSON *params = cJSON_CreateObject();
+    /* ---------- 手写 JSON ---------- */
+    int json_len = snprintf(json_str, sizeof(json_str),
+        "{\"id\":\"12\",\"version\":\"1.0\",\"params\":{"
+        "\"CoverStatus\":{\"value\":%s}"
+        "}}",
+        stu_flag.bAccFlag ? "true" : "false");
 
-    cJSON_AddStringToObject(root, "id", "12");
-    cJSON_AddStringToObject(root, "version", "1.0");
+    if (json_len < 0 || json_len >= (int)sizeof(json_str)) {
+#if (DEBUG_UART5 == 1)
+        printf("json snprintf failed, ret=%d\n", json_len);
+#endif
+        return;
+    }
 
-    cJSON *CoverStatus_obj = cJSON_CreateObject();
-    cJSON_AddBoolToObject(CoverStatus_obj, "value", stu_flag.bUpport);
-    cJSON_AddItemToObject(params, "CoverStatus", CoverStatus_obj);
-
-    cJSON_AddItemToObject(root, "params", params);
-
-    char *json_str = cJSON_PrintUnformatted(root);
-    memset(payload, 0, sizeof(payload));
-    strcat(payload, json_str);
-    free(json_str);
-    cJSON_Delete(root);
-
+    /* ---------- 拼 topic ---------- */
     memset(Topic, 0, sizeof(Topic));
-    sprintf(Topic, "$sys/%s/%s/thing/property/post",
-            stu_flash.productKey, stu_flash.deviceName);
+    snprintf(Topic, sizeof(Topic),
+             "$sys/%s/%s/thing/property/post",
+             stu_flash.productKey, stu_flash.deviceName);
 
-    EC800M_Publish(Topic, payload);
+#if (DEBUG_UART5 == 1)
+    printf("publish topic=%s\n", Topic);
+    printf("publish payload(%d)=%s\n", json_len, json_str);
+#endif
+
+    EC800M_Publish(Topic, json_str);
 }
 
 /* ============================================================================
@@ -682,81 +713,97 @@ char* extract_content(const char* str)
     return middle;
 }
 
-int get_json_value(const char* json_str)
+/**
+ * @brief  从 json 中提取 "outer_key" 后面 "inner_key" 的数值
+ * @param  json       整个 +QMTRECV 响应（或从 '{' 开始的 JSON）
+ * @param  outer_key  外层 key，如 "HeartFreq"
+ * @param  inner_key  内层 key，如 "value"
+ * @param  out        输出数值
+ * @retval 0=成功，-1=失败
+ */
+int json_get_nested_value(const char *json,
+                          const char *outer_key,
+                          const char *inner_key,
+                          double     *out)
 {
-    cJSON* root = cJSON_Parse(json_str);
-    if (root == NULL) return 1;
+    if (json == NULL || outer_key == NULL || inner_key == NULL || out == NULL)
+        return -1;
 
-    cJSON* data = cJSON_GetObjectItem(root, "data");
-    if (data == NULL) { cJSON_Delete(root); return 1; }
+    char pattern[40];
 
-    cJSON* heartFreq = cJSON_GetObjectItem(data, "HeartFreq");
-    if (heartFreq == NULL) { cJSON_Delete(root); return 1; }
+    /* ★ 只从 +QMTRECV 之后开始找，避免误命中回显/别处的字符串 */
+    const char *urc = strstr(json, "+QMTRECV");
+    if (urc != NULL) json = urc;
 
-    cJSON* fre = cJSON_GetObjectItem(heartFreq, "value");
-    if (fre == NULL) { cJSON_Delete(root); return 1; }
+    /* 1) 找 "outer_key" */
+    snprintf(pattern, sizeof(pattern), "\"%s\"", outer_key);
+    const char *p = strstr(json, pattern);
+    if (p == NULL) return -1;
 
-    cJSON_Delete(root);
-    stu_sensor.uchReportCount = fre->valueint;
-	if (stu_sensor.uchReportCount < 2)
-	{
-		stu_sensor.uchReportCount = 2;
-	}
-	if (stu_sensor.uchReportCount > 24)
-	{
-		stu_sensor.uchReportCount = 24;
-	}
-	stu_flashjson.updateIntervalmins = 24 * 60 / stu_sensor.uchReportCount;
+    /* 2) 在 outer_key 之后再找 "inner_key" */
+    snprintf(pattern, sizeof(pattern), "\"%s\"", inner_key);
+    p = strstr(p, pattern);
+    if (p == NULL) return -1;
+
+    /* 3) 跳过冒号 + 空白 */
+    p = strchr(p, ':');
+    if (p == NULL) return -1;
+    p++;
+    while (*p == ' ' || *p == '\t') p++;
+
+    /* 4) 解析数值 */
+    char *end = NULL;
+    double v = strtod(p, &end);
+    if (end == p) return -1;      /* 没解析出任何数字 */
+
+    *out = v;
     return 0;
 }
 
 /**
- * @brief  解析影子 JSON：纬度 Latitude
+ * @brief  解析 HeartFreq.value → 上报间隔
  * @retval 0=成功，1=失败
  */
-int get_json_value1(const char* json_str)
+int get_json_value(const char *json_str)
 {
-    cJSON* root = cJSON_Parse(json_str);
-    if (root == NULL) return 1;
+    double v;
+    if (json_get_nested_value(json_str, "HeartFreq", "value", &v) != 0)
+        return 1;
 
-    cJSON* data = cJSON_GetObjectItem(root, "data");
-    if (data == NULL) { cJSON_Delete(root); return 1; }
+    int cnt = (int)v;
+    if (cnt < 2)  cnt = 2;
+    if (cnt > 24) cnt = 24;
 
-    cJSON* Latitude = cJSON_GetObjectItem(data, "Latitude");
-    if (Latitude == NULL) { cJSON_Delete(root); return 1; }
-
-    cJSON* lat = cJSON_GetObjectItem(Latitude, "value");
-    if (lat == NULL) { cJSON_Delete(root); return 1; }
-
-    cJSON_Delete(root);
-    stu_flashjson.dbLat = lat->valuedouble;
-    stu_flashjson.unLat = (unsigned int)(stu_flashjson.dbLat * 10000);
-
+    stu_sensor.uchReportCount        = (uint8_t)cnt;
+    stu_flashjson.updateIntervalmins = (uint16_t)(24 * 60 / cnt);
     return 0;
 }
 
 /**
- * @brief  解析影子 JSON：经度 Longitude
- * @retval 0=成功，1=失败
+ * @brief  解析 Latitude.value
  */
-int get_json_value2(const char* json_str)
+int get_json_value1(const char *json_str)
 {
-    cJSON* root = cJSON_Parse(json_str);
-    if (root == NULL) return 1;
+    double v;
+    if (json_get_nested_value(json_str, "Latitude", "value", &v) != 0)
+        return 1;
 
-    cJSON* data = cJSON_GetObjectItem(root, "data");
-    if (data == NULL) { cJSON_Delete(root); return 1; }
+    stu_flashjson.dbLat = v;
+    stu_flashjson.unLat = (unsigned int)(v * 10000);
+    return 0;
+}
 
-    cJSON* Longitude = cJSON_GetObjectItem(data, "Longitude");
-    if (Longitude == NULL) { cJSON_Delete(root); return 1; }
+/**
+ * @brief  解析 Longitude.value
+ */
+int get_json_value2(const char *json_str)
+{
+    double v;
+    if (json_get_nested_value(json_str, "Longitude", "value", &v) != 0)
+        return 1;
 
-    cJSON* lon = cJSON_GetObjectItem(Longitude, "value");
-    if (lon == NULL) { cJSON_Delete(root); return 1; }
-
-    cJSON_Delete(root);
-    stu_flashjson.dbLon = lon->valuedouble;
-    stu_flashjson.unLon = (unsigned int)(stu_flashjson.dbLon * 10000);
-
+    stu_flashjson.dbLon = v;
+    stu_flashjson.unLon = (unsigned int)(v * 10000);
     return 0;
 }
 

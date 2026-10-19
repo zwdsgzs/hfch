@@ -58,7 +58,6 @@
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\iis2dlp.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\iis2dlp.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\iis2dlp.o: ..\BSP\dataProcess.h
 .\output\iis2dlp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\iis2dlp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

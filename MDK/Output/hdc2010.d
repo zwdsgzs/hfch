@@ -58,7 +58,6 @@
 .\output\hdc2010.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\hdc2010.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\hdc2010.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\hdc2010.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\hdc2010.o: ..\BSP\dataProcess.h
 .\output\hdc2010.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\hdc2010.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

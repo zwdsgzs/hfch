@@ -58,7 +58,6 @@
 .\output\radar.o: ..\BSP\MIDDLEWARE\gpio.h
 .\output\radar.o: ..\BSP\MIDDLEWARE\rtc.h
 .\output\radar.o: ..\BSP\MIDDLEWARE\sysclk.h
-.\output\radar.o: D:\Keil_v5\Packs\MDK-Packs\cJSON\1.0.0\cJSON.h
 .\output\radar.o: ..\BSP\dataProcess.h
 .\output\radar.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\output\radar.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

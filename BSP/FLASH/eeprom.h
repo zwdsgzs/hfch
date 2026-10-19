@@ -8,8 +8,8 @@
  * ============================================================ */
 
 #define PARA_MAGIC_VALUE    0xA1A2A3A4
-#define PARA_MAGIC_ADDR     0x08080000                  /* 魔数地址 */
-#define PARA_DATA_ADDR      (PARA_MAGIC_ADDR + 4)       /* 参数区地址 */
+#define PARA_MAGIC_ADDR     0x08080000                  /* 写地址 */
+#define PARA_DATA_ADDR      (PARA_MAGIC_ADDR + 4)       /* 数据紧跟魔数后面 */
 #define PARA_DATA_SIZE      sizeof(flshDataDef)         /* 200 字节 */
 
 

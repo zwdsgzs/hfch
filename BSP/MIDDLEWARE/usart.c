@@ -61,7 +61,7 @@ void USART1_Init(UART_HandleTypeDef *uartHandle)
   hdma_usart1_rx.Init.MemInc = DMA_MINC_ENABLE;
   hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
   hdma_usart1_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-  hdma_usart1_rx.Init.Mode = DMA_CIRCULAR;
+  hdma_usart1_rx.Init.Mode = DMA_CIRCULAR;//dma在缓存区满溢后，会触发两次
   hdma_usart1_rx.Init.Priority = DMA_PRIORITY_MEDIUM;
   if (HAL_DMA_Init(&hdma_usart1_rx) != HAL_OK)
   {
@@ -386,10 +386,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		  ring_buf_write(&rb_usart1, uart1_rxbuffer, Size);
 	  }
 	  uart1size = Size;
-	  if (uart1size >= RX_BUFFER_SIZE) 
-	  {
-		  uart1size = 0;
-	  }
+
 //	  stu_uart.uchStatus = 1;
   }
   else if (huart->Instance == USART2)
@@ -406,10 +403,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		  ring_buf_write(&rb_usart2, uart2_rxbuffer, Size);
 	  }
 	  uart2size = Size;
-	  if (uart2size >= RX_BUFFER_SIZE)
-	  {
-		  uart2size = 0;
-	  }
+
 	  stu_uart.uchStatus = 2;
     xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
   }
@@ -427,10 +421,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		  ring_buf_write(&rb_usart4, uart4_rxbuffer, Size);
 	  }
 	  uart4size = Size;
-	  if (uart4size >= RX_BUFFER_SIZE) 
-	  {
-		  uart4size = 0;
-	  }
+
 	  stu_uart.uchStatus = 4;
     xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
   }
@@ -445,13 +436,13 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 	  {
 		  /* 绕圈了，分两段写 */
 		  ring_buf_write(&rb_usart5, &uart5_rxbuffer[uart5size], RX_BUFFER_SIZE - uart5size);
-		  ring_buf_write(&rb_usart5, uart5_rxbuffer, Size);
+		  if(Size > 0)
+		  {
+			  ring_buf_write(&rb_usart5, uart5_rxbuffer, Size);
+		  }
 	  }
 	  uart5size = Size;
-	  if (uart5size >= RX_BUFFER_SIZE)
-	  {
-		  uart5size = 0;
-	  }
+
 	  stu_uart.uchStatus = 5;
     xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
   }

@@ -354,10 +354,10 @@ ARM Macro Assembler    Page 6
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0+ --apcs=inter
 work --depend=.\output\startup_stm32l071xx.d -o.\output\startup_stm32l071xx.o -
-I.\RTE\_hufenchi -ID:\Keil_v5\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include -ID:\Kei
-l_v5\Packs\MDK-Packs\cJSON\1.0.0 --predefine="__MICROLIB SETA 1" --predefine="_
-_UVISION_VERSION SETA 540" --predefine="STM32L071xx SETA 1" --predefine="_RTE_ 
-SETA 1" --list=.\output\startup_stm32l071xx.lst ..\DRIVER\startup_stm32l071xx.s
+I.\RTE\_hufenchi -ID:\Keil_v5\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include --predef
+ine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 540" --predefine="S
+TM32L071xx SETA 1" --predefine="_RTE_ SETA 1" --list=.\output\startup_stm32l071
+xx.lst ..\DRIVER\startup_stm32l071xx.s
 
 
 

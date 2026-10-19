@@ -62,3 +62,12 @@ int main(void)
 }
 
 
+
+
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+{
+    printf("!!!! STACK OVERFLOW in: %s\r\n", pcTaskName);
+    while(1);
+}
+
+
