@@ -1,5 +1,8 @@
 #include "eeprom.h"
 
+#define flashid		2
+#define flashidinit		0
+
 flshDataDef stu_flash = {0};
 flshDataDef stu_flashjson = {0};
 
@@ -139,6 +142,12 @@ int flashReadFromEEPROM(void)
     uint32_t word_len;
     uint32_t *p;
 
+#if (flashidinit == 1)
+	flashDataInit();
+    flashWriteToEEPROM();
+	HAL_Delay(1000);
+#endif
+
     //  先读魔数，判断 EEPROM 是否有效 
     if (EEPROM_ReadData(PARA_MAGIC_ADDR, &magic, 1) != HAL_OK) {
         return -1;
@@ -195,8 +204,13 @@ int flashWriteToEEPROM(void)
 
 void flashDataInit(void)
 { 
+#if (flashid == 1)
 	strcpy(stu_flash.deviceName,"dev_0001");//经测试，纯数字id最多8位，带英文id最多9位
 	strcpy(stu_flash.deviceSecret,"dWg0QXhnQW5TVWEzVFNPelBwQkFTQWVGNHZmaVF3aXk=");
+#elif (flashid == 2)
+	strcpy(stu_flash.deviceName,"dev_0002");//经测试，纯数字id最多8位，带英文id最多9位
+	strcpy(stu_flash.deviceSecret,"UTV1MmFESWlnYUdibWFQTFZYUkVFbDJOYzNQV2IzajM=");
+#endif
 
 	strcpy(stu_flash.mqttBroker,"z8k09jGpX5.mqtts.acc.cmcconenet.cn");
 	strcpy(stu_flash.productKey,"z8k09jGpX5");

@@ -3,10 +3,6 @@
 /* External variables --------------------------------------------------------*/
 extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim3;
-extern DMA_HandleTypeDef hdma_usart1_rx;
-extern DMA_HandleTypeDef hdma_usart2_rx;
-extern DMA_HandleTypeDef hdma_usart4_rx;
-extern DMA_HandleTypeDef hdma_usart5_rx;
 
 /******************************************************************************/
 /*           Cortex-M0+ Processor Interruption and Exception Handlers          */
@@ -160,52 +156,6 @@ void EXTI4_15_IRQHandler(void)
   /* USER CODE BEGIN EXTI4_15_IRQn 1 */
 
   /* USER CODE END EXTI4_15_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA1 channel 2 and channel 3 interrupts.
-  */
-void DMA1_Channel2_3_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel2_3_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel2_3_IRQn 0 */
-  if (hdma_usart1_rx.Instance != NULL)
-  {
-      HAL_DMA_IRQHandler(&hdma_usart1_rx);
-  }
-  if (hdma_usart5_rx.Instance != NULL)
-  {
-      HAL_DMA_IRQHandler(&hdma_usart5_rx);
-  }
-//  HAL_DMA_IRQHandler(&hdma_usart5_rx);
-//  HAL_DMA_IRQHandler(&hdma_usart1_rx);
-  /* USER CODE BEGIN DMA1_Channel2_3_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel2_3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA1 channel 4, channel 5, channel 6 and channel 7 interrupts.
-  */
-void DMA1_Channel4_5_6_7_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel4_5_6_7_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel4_5_6_7_IRQn 0 */
-  if (hdma_usart2_rx.Instance != NULL)
-  {
-      HAL_DMA_IRQHandler(&hdma_usart2_rx);
-  }
-  if (hdma_usart4_rx.Instance != NULL)
-  {
-      HAL_DMA_IRQHandler(&hdma_usart4_rx);
-  }
-//  HAL_DMA_IRQHandler(&hdma_usart2_rx);
-//  HAL_DMA_IRQHandler(&hdma_usart4_rx);
-  /* USER CODE BEGIN DMA1_Channel4_5_6_7_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel4_5_6_7_IRQn 1 */
 }
 
 /**

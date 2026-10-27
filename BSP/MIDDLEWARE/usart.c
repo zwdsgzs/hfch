@@ -6,15 +6,12 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart5;
-DMA_HandleTypeDef hdma_usart1_rx;
-DMA_HandleTypeDef hdma_usart2_rx;
-DMA_HandleTypeDef hdma_usart4_rx;
-DMA_HandleTypeDef hdma_usart5_rx;
 
-unsigned char uart1_rxbuffer[RX_BUFFER_SIZE] = {0};
-unsigned char uart2_rxbuffer[RX_BUFFER_SIZE] = {0};
-unsigned char uart4_rxbuffer[RX_BUFFER_SIZE] = {0};
-unsigned char uart5_rxbuffer[RX_BUFFER_SIZE] = {0};
+// 为每个串口分配一个独立的单字节接收缓存
+unsigned char rx_byte1 = 0;
+unsigned char rx_byte2 = 0;
+unsigned char rx_byte4 = 0;
+unsigned char rx_byte5 = 0;
 
 /* USART1 init function */
 void USART1_Init(UART_HandleTypeDef *uartHandle)
@@ -23,8 +20,7 @@ void USART1_Init(UART_HandleTypeDef *uartHandle)
 
   __HAL_RCC_USART1_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA1_CLK_ENABLE();
+
   /**USART1 GPIO Configuration
   PA9     ------> USART1_TX
   PA10     ------> USART1_RX
@@ -51,24 +47,42 @@ void USART1_Init(UART_HandleTypeDef *uartHandle)
   {
     Error_Handler();
   }
+}
 
-  /* USART1 DMA Init */
-  /* USART1_RX Init */
-  hdma_usart1_rx.Instance = DMA1_Channel3;
-  hdma_usart1_rx.Init.Request = DMA_REQUEST_3;
-  hdma_usart1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
-  hdma_usart1_rx.Init.PeriphInc = DMA_PINC_DISABLE;
-  hdma_usart1_rx.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-  hdma_usart1_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-  hdma_usart1_rx.Init.Mode = DMA_CIRCULAR;//dma在缓存区满溢后，会触发两次
-  hdma_usart1_rx.Init.Priority = DMA_PRIORITY_MEDIUM;
-  if (HAL_DMA_Init(&hdma_usart1_rx) != HAL_OK)
-  {
-    Error_Handler();
-  }
+void USART1_DeInit(void)
+{
+    HAL_UART_DeInit(&huart1);
 
-  __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart1_rx);
+    // 4. 关键一步：将 TX 和 RX 引脚配置为模拟输入（高阻态）
+    // 这样即使 MCU 还在运行，TX 引脚也不会输出 3.3V，彻底断开漏电路径
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG; // 模拟输入模式，最彻底的隔离
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    // 关闭 USART1 的时钟以省电和彻底复位
+    __HAL_RCC_USART1_CLK_DISABLE();
+}
+
+void USART1_ReInit(UART_HandleTypeDef *uartHandle)
+{
+  // 强行复位 USART1 外设硬
+  __HAL_RCC_USART1_FORCE_RESET();
+  __HAL_RCC_USART1_RELEASE_RESET();
+
+  //重置 HAL 库的状态变量
+  huart1.RxState = HAL_UART_STATE_READY;
+  huart1.ErrorCode = HAL_UART_ERROR_NONE;
+
+  // 清空 NVIC 挂起标志（防止中断死循环）
+  NVIC_ClearPendingIRQ(USART1_IRQn);
+
+  // 重新初始化串口
+  USART1_Init(&huart1);
+
+  // 重新开启接收中断
+  HAL_UART_Receive_IT(&huart1, &rx_byte1, 1);
 }
 /* USART2 init function */
 
@@ -78,8 +92,7 @@ void USART2_Init(UART_HandleTypeDef *uartHandle)
 
   __HAL_RCC_USART2_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA1_CLK_ENABLE();
+
   /**USART2 GPIO Configuration
   PA2     ------> USART2_TX
   PA3     ------> USART2_RX
@@ -106,24 +119,6 @@ void USART2_Init(UART_HandleTypeDef *uartHandle)
   {
     Error_Handler();
   }
-   
-  /* USART2 DMA Init */
-  /* USART2_RX Init */
-  hdma_usart2_rx.Instance = DMA1_Channel5;
-  hdma_usart2_rx.Init.Request = DMA_REQUEST_4;
-  hdma_usart2_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
-  hdma_usart2_rx.Init.PeriphInc = DMA_PINC_DISABLE;
-  hdma_usart2_rx.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_usart2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-  hdma_usart2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-  hdma_usart2_rx.Init.Mode = DMA_CIRCULAR;
-  hdma_usart2_rx.Init.Priority = DMA_PRIORITY_MEDIUM;
-  if (HAL_DMA_Init(&hdma_usart2_rx) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart2_rx);
 }
 /* USART4 init function */
 
@@ -133,8 +128,7 @@ void USART4_Init(UART_HandleTypeDef *uartHandle)
   
   __HAL_RCC_USART4_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA1_CLK_ENABLE();
+
   /**USART4 GPIO Configuration
   PC10     ------> USART4_TX
   PC11     ------> USART4_RX
@@ -161,24 +155,6 @@ void USART4_Init(UART_HandleTypeDef *uartHandle)
   {
     Error_Handler();
   }
-  
-  /* USART4 DMA Init */
-  /* USART4_RX Init */
-  hdma_usart4_rx.Instance = DMA1_Channel6;
-  hdma_usart4_rx.Init.Request = DMA_REQUEST_12;
-  hdma_usart4_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
-  hdma_usart4_rx.Init.PeriphInc = DMA_PINC_DISABLE;
-  hdma_usart4_rx.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_usart4_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-  hdma_usart4_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-  hdma_usart4_rx.Init.Mode = DMA_CIRCULAR;
-  hdma_usart4_rx.Init.Priority = DMA_PRIORITY_LOW;
-  if (HAL_DMA_Init(&hdma_usart4_rx) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart4_rx);
 }
 /* USART5 init function */
 
@@ -188,8 +164,7 @@ void USART5_Init(UART_HandleTypeDef *uartHandle)
 
   __HAL_RCC_USART5_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA1_CLK_ENABLE();
+
   /**USART5 GPIO Configuration
   PB3     ------> USART5_TX
   PB4     ------> USART5_RX
@@ -216,70 +191,52 @@ void USART5_Init(UART_HandleTypeDef *uartHandle)
   {
     Error_Handler();
   }
-
-  /* USART5 DMA Init */
-  /* USART5_RX Init */
-  hdma_usart5_rx.Instance = DMA1_Channel2;
-  hdma_usart5_rx.Init.Request = DMA_REQUEST_13;
-  hdma_usart5_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
-  hdma_usart5_rx.Init.PeriphInc = DMA_PINC_DISABLE;
-  hdma_usart5_rx.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_usart5_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-  hdma_usart5_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-  hdma_usart5_rx.Init.Mode = DMA_CIRCULAR;
-  hdma_usart5_rx.Init.Priority = DMA_PRIORITY_LOW;
-  if (HAL_DMA_Init(&hdma_usart5_rx) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart5_rx);
 }
 
 void uartRcvStart(unsigned char uartx)
 {
-  HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
-
-  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
-
-  HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(USART1_IRQn);
-
-  HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(USART2_IRQn);
-
-  HAL_NVIC_SetPriority(USART4_5_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(USART4_5_IRQn);
-
 	switch (uartx)
 	{
 	case 0:
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart1_rxbuffer, RX_BUFFER_SIZE);
-		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_rxbuffer, RX_BUFFER_SIZE);
-		__HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart4_rxbuffer, RX_BUFFER_SIZE);
-		__HAL_DMA_DISABLE_IT(&hdma_usart4_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart5, uart5_rxbuffer, RX_BUFFER_SIZE);
-		__HAL_DMA_DISABLE_IT(&hdma_usart5_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
+		HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
+		HAL_NVIC_EnableIRQ(USART1_IRQn);
+
+		HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+		HAL_NVIC_EnableIRQ(USART2_IRQn);
+
+		HAL_NVIC_SetPriority(USART4_5_IRQn, 5, 0);
+		HAL_NVIC_EnableIRQ(USART4_5_IRQn);
+
+		// 启动单字节接收中断
+		HAL_UART_Receive_IT(&huart1, &rx_byte1, 1);
+		HAL_UART_Receive_IT(&huart2, &rx_byte2, 1);
+		HAL_UART_Receive_IT(&huart4, &rx_byte4, 1);
+		HAL_UART_Receive_IT(&huart5, &rx_byte5, 1);
 		break;
 	case 1:
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart1_rxbuffer, RX_BUFFER_SIZE);
-		__HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
+		HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
+		HAL_NVIC_EnableIRQ(USART1_IRQn);
+
+		// 启动单字节接收中断
+		HAL_UART_Receive_IT(&huart1, &rx_byte1, 1);
 		break;
 	case 2:
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_rxbuffer, RX_BUFFER_SIZE);
-		__HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
+		HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+		HAL_NVIC_EnableIRQ(USART2_IRQn);
+
+		HAL_UART_Receive_IT(&huart2, &rx_byte2, 1);
 		break;
 	case 4:
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart4_rxbuffer, RX_BUFFER_SIZE);
-		__HAL_DMA_DISABLE_IT(&hdma_usart4_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
+		HAL_NVIC_SetPriority(USART4_5_IRQn, 5, 0);
+		HAL_NVIC_EnableIRQ(USART4_5_IRQn);
+
+		HAL_UART_Receive_IT(&huart4, &rx_byte4, 1);
 		break;
 	case 5:
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart5, uart5_rxbuffer, RX_BUFFER_SIZE);
-		__HAL_DMA_DISABLE_IT(&hdma_usart5_rx, DMA_IT_HT);  // 关闭半传输中断，避免频繁触发
+		HAL_NVIC_SetPriority(USART4_5_IRQn, 5, 0);
+		HAL_NVIC_EnableIRQ(USART4_5_IRQn);
+
+		HAL_UART_Receive_IT(&huart5, &rx_byte5, 1);
 		break;
 	default:break;
 	}
@@ -321,133 +278,74 @@ HAL_StatusTypeDef uartSendIT(unsigned char uartx, const uint8_t *data, uint16_t 
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
+	// 清除所有错误标志
+    __HAL_UART_CLEAR_OREFLAG(huart);
+    __HAL_UART_CLEAR_NEFLAG(huart);
+    __HAL_UART_CLEAR_FEFLAG(huart);
+    __HAL_UART_CLEAR_PEFLAG(huart);
+    
+    // 强行读取 DR 寄存器，物理破除 ORE 锁死状态
+    volatile uint32_t tmpreg = huart->Instance->RDR; 
+    (void)tmpreg;
+    
+    huart->ErrorCode = HAL_UART_ERROR_NONE;
+
 	if (huart->Instance == USART1)
 	{
-		__HAL_UART_CLEAR_OREFLAG(huart);
-        __HAL_UART_CLEAR_NEFLAG(huart);
-        __HAL_UART_CLEAR_FEFLAG(huart);
-        __HAL_UART_CLEAR_PEFLAG(huart);
-        huart->ErrorCode = HAL_UART_ERROR_NONE;
+        HAL_UART_Receive_IT(huart, &rx_byte1, 1);
 	}
 	else if (huart->Instance == USART2)
 	{
-		__HAL_UART_CLEAR_OREFLAG(huart);
-        __HAL_UART_CLEAR_NEFLAG(huart);
-        __HAL_UART_CLEAR_FEFLAG(huart);
-        __HAL_UART_CLEAR_PEFLAG(huart);
-        huart->ErrorCode = HAL_UART_ERROR_NONE;
+		HAL_UART_Receive_IT(huart, &rx_byte2, 1);
 	}
     else if (huart->Instance == USART4)
     {
-//		uint32_t err = huart->ErrorCode;
-        // HAL_UART_ERROR_PE   = 0x01  校验错误
-        // HAL_UART_ERROR_NE   = 0x02  噪声错误
-        // HAL_UART_ERROR_FE   = 0x04  帧错误
-        // HAL_UART_ERROR_ORE  = 0x08  溢出错误
-        // HAL_UART_ERROR_DMA  = 0x10  DMA传输错误
-        // HAL_UART_ERROR_RTO  = 0x20  接收超时
-
-        // 清除所有错误标志
-        __HAL_UART_CLEAR_OREFLAG(huart);
-        __HAL_UART_CLEAR_NEFLAG(huart);
-        __HAL_UART_CLEAR_FEFLAG(huart);
-        __HAL_UART_CLEAR_PEFLAG(huart);
-        huart->ErrorCode = HAL_UART_ERROR_NONE;
+		HAL_UART_Receive_IT(huart, &rx_byte4, 1);
     }
 	else if (huart->Instance == USART5)
 	{
-		__HAL_UART_CLEAR_OREFLAG(huart);
-        __HAL_UART_CLEAR_NEFLAG(huart);
-        __HAL_UART_CLEAR_FEFLAG(huart);
-        __HAL_UART_CLEAR_PEFLAG(huart);
-        huart->ErrorCode = HAL_UART_ERROR_NONE;
+		HAL_UART_Receive_IT(huart, &rx_byte5, 1);
 	}
 }
 
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+// 接收完成回调（每收到 1 个字节触发一次）
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	static uint16_t uart1size = 0;
-	static uint16_t uart2size = 0;
-	static uint16_t uart4size = 0;
-	static uint16_t uart5size = 0;
-  BaseType_t woken = pdFALSE;
+	BaseType_t woken = pdFALSE;
 
-  if (huart->Instance == USART1)
-  {
-	  if (Size > uart1size)
-	  {
-		  /* 没绕圈 */
-		  ring_buf_write(&rb_usart1, &uart1_rxbuffer[uart1size], Size - uart1size);
-	  }
-	  else if (Size < uart1size)
-	  {
-		  /* 绕圈了，分两段写 */
-		  ring_buf_write(&rb_usart1, &uart1_rxbuffer[uart1size], RX_BUFFER_SIZE - uart1size);
-		  ring_buf_write(&rb_usart1, uart1_rxbuffer, Size);
-	  }
-	  uart1size = Size;
+    if (huart->Instance == USART1)
+    {
+        // 将数据压入环形缓冲区
+        ring_buf_write(&rb_usart1, &rx_byte1, 1);
 
-//	  stu_uart.uchStatus = 1;
-  }
-  else if (huart->Instance == USART2)
-  {
-	  if (Size > uart2size)
-	  {
-		  /* 没绕圈 */
-		  ring_buf_write(&rb_usart2, &uart2_rxbuffer[uart2size], Size - uart2size);
-	  }
-	  else if (Size < uart2size)
-	  {
-		  /* 绕圈了，分两段写 */
-		  ring_buf_write(&rb_usart2, &uart2_rxbuffer[uart2size], RX_BUFFER_SIZE - uart2size);
-		  ring_buf_write(&rb_usart2, uart2_rxbuffer, Size);
-	  }
-	  uart2size = Size;
-
+        //重新开启接收中断，准备收下一个字节
+        HAL_UART_Receive_IT(huart, &rx_byte1, 1);
+    }
+	else if (huart->Instance == USART2)
+	{
+	  ring_buf_write(&rb_usart2, &rx_byte2, 1);
 	  stu_uart.uchStatus = 2;
-    xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
-  }
-  else if (huart->Instance == USART4)
-  {
-	  if (Size > uart4size)
-	  {
-		  /* 没绕圈 */
-		  ring_buf_write(&rb_usart4, &uart4_rxbuffer[uart4size], Size - uart4size);
-	  }
-	  else if (Size < uart4size)
-	  {
-		  /* 绕圈了，分两段写 */
-		  ring_buf_write(&rb_usart4, &uart4_rxbuffer[uart4size], RX_BUFFER_SIZE - uart4size);
-		  ring_buf_write(&rb_usart4, uart4_rxbuffer, Size);
-	  }
-	  uart4size = Size;
-
-	  stu_uart.uchStatus = 4;
-    xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
-  }
-  else if (huart->Instance == USART5)
-  {
-	  if (Size > uart5size)
-	  {
-		  /* 没绕圈 */
-		  ring_buf_write(&rb_usart5, &uart5_rxbuffer[uart5size], Size - uart5size);
-	  }
-	  else if (Size < uart5size)
-	  {
-		  /* 绕圈了，分两段写 */
-		  ring_buf_write(&rb_usart5, &uart5_rxbuffer[uart5size], RX_BUFFER_SIZE - uart5size);
-		  if(Size > 0)
-		  {
-			  ring_buf_write(&rb_usart5, uart5_rxbuffer, Size);
-		  }
-	  }
-	  uart5size = Size;
-
-	  stu_uart.uchStatus = 5;
-    xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
-  }
-  portYIELD_FROM_ISR(woken);
+	  HAL_UART_Receive_IT(huart, &rx_byte2, 1);
+	  xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
+	}
+	else if (huart->Instance == USART4)
+    {
+        ring_buf_write(&rb_usart4, &rx_byte4, 1);
+        stu_uart.uchStatus = 4;
+        HAL_UART_Receive_IT(huart, &rx_byte4, 1);
+        xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
+    }
+    else if (huart->Instance == USART5)
+    {
+        ring_buf_write(&rb_usart5, &rx_byte5, 1);
+        stu_uart.uchStatus = 5;
+        HAL_UART_Receive_IT(huart, &rx_byte5, 1);
+        xQueueSendFromISR(xUartEvtQueue, &stu_uart, &woken);
+    }
+    
+    portYIELD_FROM_ISR(woken);
 }
+
 
 #if (DEBUG_UART5 == 1)
 /* ---------- 调试模式：printf → USART5 ---------- */

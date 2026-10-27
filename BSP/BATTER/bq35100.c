@@ -114,7 +114,7 @@ int BQ35100_ReadAccumulatedCapacity(void)
 		used_uAh = 0;
 	}
 
-	stu_sensor.unBatEle = used_uAh;
+//	stu_sensor.unBatEle = used_uAh;
 
 	stu_sensor.uchBattery = 100 - (unsigned char)((used_uAh / 19000000.0f) * 100.0f);
 

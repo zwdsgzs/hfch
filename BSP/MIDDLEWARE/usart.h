@@ -61,6 +61,8 @@ void USART4_Init(UART_HandleTypeDef *uartHandle);
 void USART5_Init(UART_HandleTypeDef *uartHandle);
 
 /* USER CODE BEGIN Prototypes */
+void USART1_DeInit(void);
+void USART1_ReInit(UART_HandleTypeDef *uartHandle);
 
 void uartRcvStart(unsigned char uartx);
 HAL_StatusTypeDef uartSendIT(unsigned char uartx, const uint8_t *data, uint16_t len);

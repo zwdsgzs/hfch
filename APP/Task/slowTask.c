@@ -42,6 +42,10 @@ void appSlowTask(void *argument)
 					switch (uchStep)
 					{
 					case 0:
+						if (usCount == 50)
+						{
+							ClearSensorData(&stu_sensor);
+						}
 						stu_sensor.collectCnt = (usCount / 50) - 1;
 						break;
 					case 1:
@@ -81,13 +85,13 @@ void appSlowTask(void *argument)
 			{
 				usCount = 0;
 				stu_4G.process = 0;
-//				if (stu_sensor.uchLDCnt == 0)
-//				{
-//					Sleep(stu_flash.updateIntervalmins);
-//				}
-//				else{
-//					Sleep(5);
-//				}
+				if (stu_sensor.uchLDCnt == 0)
+				{
+					Sleep(stu_flash.updateIntervalmins);
+				}
+				else{
+					Sleep(5);
+				}
 			}
 		}
 	}

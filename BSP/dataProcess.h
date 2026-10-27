@@ -54,7 +54,7 @@ typedef struct{
 	unsigned short sHum[6];	//Êª¶È
 	unsigned short sAngle[5];//Çã½Ç
 
-	unsigned int unBatEle;
+//	unsigned int unBatEle;
 }struSensorDef;
 extern struSensorDef stu_sensor;
 
@@ -79,5 +79,7 @@ uint16_t Modbus_CRC16(uint8_t* data, size_t length);
 
 unsigned short getusData(unsigned short usData[]);
 short getsData(short usData[]);
+
+void ClearSensorData(struSensorDef *pSensor);
 
 #endif 

@@ -42,7 +42,7 @@ extern "C" {
  *      1 = 调试打印（PC 串口助手）
  *      0 = 传感器通信
  * ========================================================= */
-#define DEBUG_UART5     1
+#define DEBUG_UART5     0
 
 /* 调试宏：只有当 DEBUG_UART5 == 1 时才有效 */
 #if (DEBUG_UART5 == 1)

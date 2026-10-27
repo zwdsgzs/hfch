@@ -575,6 +575,7 @@ void Mq_Pub_P(void)
     if (stu_sensor.usH2S > 100) stu_sensor.usH2S = 100;
 
     stu_sensor.usLD = getusData(stu_sensor.sLD);
+	if (stu_sensor.usLD > 10000) stu_sensor.usLD = 10000;
     if (stu_sensor.usLD == 0) stu_sensor.uchLDCnt++;
     else                      stu_sensor.uchLDCnt = 0;
 
@@ -631,7 +632,7 @@ void Mq_Pub_P(void)
              stu_flash.productKey, stu_flash.deviceName);
 
     /* ---------- 发布条件 ---------- */
-    if ((stu_sensor.uchLDCnt == 0) || (stu_sensor.uchLDCnt == 3))
+//    if ((stu_sensor.uchLDCnt == 0) || (stu_sensor.uchLDCnt == 3))
     {
         EC800M_Publish(Topic, json_str);
 		osDelay(1000);

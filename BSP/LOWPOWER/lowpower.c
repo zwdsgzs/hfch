@@ -1,55 +1,41 @@
 #include "lowpower.h"
+#include "usart.h"
 
 void PowerOn_4G(void)
 {
-	LTE_PWRKEY_RESET;
-//	LTE_RST_RESET;
-	LTE_DTR_RESET;
-	V3_6_POWER_RESET;
-	LTE_POWER_RESET;
-	osDelay(3000);
-
-    LTE_POWER_SET;//上电
-	V3_6_POWER_SET;
 	LTE_PWRKEY_SET;
 	LTE_DTR_SET;
-	osDelay(35);
-	LTE_PWRKEY_RESET;
-	osDelay(27);
 	LTE_RST_SET;
-	osDelay(700);
-	LTE_PWRKEY_SET;
-	osDelay(5000);//等待模块完全开机
-//	LTE_RST_SET;
-//LTE_POWER_SET;
-//osDelay(100);
-//V3_6_POWER_SET;
-//osDelay(300);
-//LTE_PWRKEY_RESET;
-//osDelay(800);
-//LTE_PWRKEY_SET;
+	V3_6_POWER_SET;
+	LTE_POWER_SET;
+	osDelay(500);
 
-osDelay(5000);//等待模块完全开机
+//	USART1_ReInit(&huart1);
+
+	LTE_PWRKEY_RESET;
+	osDelay(800);
+	LTE_PWRKEY_SET;
+	osDelay(500);
+
+	osDelay(5000);//等待模块完全开机.
 }
 
 void PowerOff_4G(void)
 {
-	LTE_PWRKEY_SET;
-	LTE_POWER_SET;
-	V3_6_POWER_SET;
-	LTE_RST_SET;
-	LTE_DTR_SET;
-	osDelay(1000);
+//	USART1_DeInit();
 
+	LTE_PWRKEY_SET;
+	osDelay(500);
     LTE_PWRKEY_RESET;
-	osDelay(750);
+	osDelay(800);
 	LTE_PWRKEY_SET;
-	osDelay(10000);//等待模块完全关机
+	osDelay(500);
 
+	osDelay(5000);//等待模块完全关机
 	LTE_POWER_RESET;
+	V3_6_POWER_RESET;
 	LTE_RST_RESET;
 	LTE_DTR_RESET;
-	V3_6_POWER_RESET;
 	osDelay(3000);
 }
 
@@ -64,6 +50,7 @@ void PowerRST_4G(void)
 void Sensor_PowerOn(void)
 {
 	V3_6_POWER_SET;
+	LTE_POWER_SET;
 	BQ35100_Init();//电量库仑计,上电
 	CH4_POWER_SET;
 	H2S_POWER_SET;
@@ -97,8 +84,6 @@ void sleep_pin_Power_cfg(void)
     HAL_NVIC_DisableIRQ(USART1_IRQn);
     HAL_NVIC_DisableIRQ(USART2_IRQn);
     HAL_NVIC_DisableIRQ(USART4_5_IRQn);
-    HAL_NVIC_DisableIRQ(DMA1_Channel2_3_IRQn);
-    HAL_NVIC_DisableIRQ(DMA1_Channel4_5_6_7_IRQn);
 
 	/* 关闭定时器中断 */
 	HAL_TIM_Base_Stop_IT(&htim3);
@@ -146,8 +131,8 @@ void wkp_pin_Power_cfg(void)
     HAL_NVIC_EnableIRQ(USART1_IRQn);
     HAL_NVIC_EnableIRQ(USART2_IRQn);
     HAL_NVIC_EnableIRQ(USART4_5_IRQn);
-    HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
-    HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
+
+    uartRcvStart(0); 
 
 	/*  重新打开定时器中断 */
 	HAL_TIM_Base_Start_IT(&htim3);

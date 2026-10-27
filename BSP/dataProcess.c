@@ -343,3 +343,31 @@ short getsData(short usData[])
     return (short)avg;
 }
 
+/*
+ * 清空结构体中的传感器数据
+ * 说明：
+ *   - 实时值：usCH4/usH2S/usLD/usTemp/usHum/usAngle 清 0
+ *   - 历史数组：sH2S[6]/sLD[6]/sTemp[6]/sHum[6]/sAngle[5] 清 0
+ */
+void ClearSensorData(struSensorDef *pSensor)
+{
+    if (pSensor == NULL) {
+        return;
+    }
+
+    /* ---- 当前实时传感器数据 ---- */
+    pSensor->usCH4      = 0;
+    pSensor->usH2S      = 0;
+    pSensor->usLD       = 0;
+    pSensor->usTemp     = 0;
+    pSensor->usHum      = 0;
+    pSensor->usAngle    = 0;
+
+    /* ---- 历史采集数组 ---- */
+    memset(pSensor->sH2S,   0, sizeof(pSensor->sH2S));
+    memset(pSensor->sLD,    0, sizeof(pSensor->sLD));
+    memset(pSensor->sTemp,  0, sizeof(pSensor->sTemp));
+    memset(pSensor->sHum,   0, sizeof(pSensor->sHum));
+    memset(pSensor->sAngle, 0, sizeof(pSensor->sAngle));
+}
+
