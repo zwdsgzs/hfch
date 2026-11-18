@@ -1,0 +1,16 @@
+.\output\hc32_ll_tmr0.o: ..\DRIVER\src\hc32_ll_tmr0.c
+.\output\hc32_ll_tmr0.o: ..\DRIVER\inc\hc32_ll_tmr0.h
+.\output\hc32_ll_tmr0.o: ..\DRIVER\inc\hc32_ll_def.h
+.\output\hc32_ll_tmr0.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\output\hc32_ll_tmr0.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\hc32f4xx.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\hc32f448.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\core_cm4.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\cmsis_version.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\cmsis_compiler.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\cmsis_armcc.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\mpu_armv7.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\system_hc32f448.h
+.\output\hc32_ll_tmr0.o: ..\COMMON\hc32f4xx.h
+.\output\hc32_ll_tmr0.o: ..\APP\hc32f4xx_conf.h
+.\output\hc32_ll_tmr0.o: ..\DRIVER\inc\hc32_ll_utility.h

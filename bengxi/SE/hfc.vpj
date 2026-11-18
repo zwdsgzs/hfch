@@ -1,0 +1,441 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+	Version="10.0"
+	VendorName="SlickEdit"
+	TemplateName="GNU C/C++"
+	WorkingDir="."
+	BuildSystem="vsbuild">
+	<Config
+		Name="Debug"
+		Type="gnuc"
+		DebugCallbackName="gdb"
+		Version="1"
+		OutputFile="%bdhfc.exe"
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='gcc -ansi -c %xup  %defd -g -o "%bd%n%oe" %i "%f"'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				ShowOnMenu="Never"
+				Dialog="_gnuc_options_form Link"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='gcc -ansi %xup -g -o "%o" %f %libs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" "%w" "%r" -t build'/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" "%w" "%r" -t rebuild'/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveNone"
+				RunFromDir="%rw">
+				<Exec CmdLine='vsdebugio -prog "%o"'/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%o"'/>
+			</Target>
+			<Target
+				Name="dash"
+				MenuCaption="-"
+				Deletable="0">
+				<Exec/>
+			</Target>
+			<Target
+				Name="GNU C Options"
+				MenuCaption="GNU C &amp;Options..."
+				ShowOnMenu="HideIfNoCmdLine"
+				Deletable="0"
+				SaveOption="SaveNone">
+				<Exec
+					CmdLine="gnucoptions"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+		<Rules Name="Compile">
+			<Rule
+				InputExts="*.ada"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gnat -g -c -o "%bd%n.o" "%f"'/>
+			</Rule>
+			<Rule
+				InputExts="*.adb"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gnat -g -c -o "%bd%n.o" "%f"'/>
+			</Rule>
+			<Rule
+				InputExts="*.f"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gfortran -c -g -o "%bd%n.o" "%f"'/>
+			</Rule>
+			<Rule
+				InputExts="*.f90"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gfortran -c -g -o "%bd%n.o" "%f"'/>
+			</Rule>
+			<Rule
+				InputExts="*.d"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gdc -c -g -o "%bd%n.o" "%f"'/>
+			</Rule>
+		</Rules>
+		<List Name="GNUC Options">
+			<Item
+				Name="LinkerOutputType"
+				Value="Executable"/>
+		</List>
+	</Config>
+	<Config
+		Name="Release"
+		Type="gnuc"
+		DebugCallbackName="gdb"
+		Version="1"
+		OutputFile="%bdhfc.exe"
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='gcc -ansi -c %xup %defd -o "%bd%n%oe" %i "%f"'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				ShowOnMenu="Never"
+				Dialog="_gnuc_options_form Link"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='gcc -ansi %xup -o "%o" %f %libs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" "%w" "%r" -t build'/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" "%w" "%r" -t rebuild'/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveNone"
+				RunFromDir="%rw">
+				<Exec CmdLine='vsdebugio -prog "%o"'/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%o"'/>
+			</Target>
+			<Target
+				Name="dash"
+				MenuCaption="-"
+				Deletable="0">
+				<Exec/>
+			</Target>
+			<Target
+				Name="GNU C Options"
+				MenuCaption="GNU C &amp;Options..."
+				ShowOnMenu="HideIfNoCmdLine"
+				Deletable="0"
+				SaveOption="SaveNone">
+				<Exec
+					CmdLine="gnucoptions"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+		<Rules Name="Compile">
+			<Rule
+				InputExts="*.ada"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gnat -O -c -o "%bd%n.o" "%f"'/>
+			</Rule>
+			<Rule
+				InputExts="*.adb"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gnat -O -c -o "%bd%n.o" "%f"'/>
+			</Rule>
+			<Rule
+				InputExts="*.f"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gfortran -O -g -o "%bd%n.o" "%f"'/>
+			</Rule>
+			<Rule
+				InputExts="*.f90"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gfortran -O -g -o "%bd%n.o" "%f"'/>
+			</Rule>
+			<Rule
+				InputExts="*.d"
+				OutputExts="*.o"
+				LinkObject="1">
+				<Exec CmdLine='gdc -c -g -o "%bd%n.o" "%f"'/>
+			</Rule>
+		</Rules>
+		<List Name="GNUC Options">
+			<Item
+				Name="LinkerOutputType"
+				Value="Executable"/>
+		</List>
+	</Config>
+	<CustomFolders>
+		<Folder
+			Name="Source Files"
+			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.scala;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go;*.groovy;*.gsh"
+			GUID="{353131CF-34A2-4EE5-8160-755480E37F44}"></Folder>
+		<Folder
+			Name="Header Files"
+			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
+			GUID="{941474BD-9A71-493B-8166-43EE51FA9894}"></Folder>
+		<Folder
+			Name="Resource Files"
+			Filters="*.ico;*.cur;*.dlg"
+			GUID="{14529018-6EA5-4FCC-A9FA-578B78626962}"/>
+		<Folder
+			Name="Bitmaps"
+			Filters="*.bmp"
+			GUID="{F31B0F1D-A7A1-4233-A749-571A520D773A}"/>
+		<Folder
+			Name="Other Files"
+			Filters=""
+			GUID="{9E51ECF4-7A97-4845-8C55-1ED2E52FE7F1}"/>
+	</CustomFolders>
+	<List Name="RTE">
+	</List>
+	<Files AutoFolders="DirectoryView">
+		<Folder Name="../APP">
+			<F N="../APP/config.h"/>
+			<F N="../APP/dataproce.c"/>
+			<F N="../APP/dataproce.h"/>
+			<F N="../APP/handle.c"/>
+			<F N="../APP/hc32f4xx_conf.h"/>
+			<F N="../APP/main.c"/>
+			<F N="../APP/main.h"/>
+		</Folder>
+		<Folder Name="../BSP">
+			<Folder Name="ch4">
+				<F N="../BSP/ch4/YL_WI_YY_6001.c"/>
+				<F N="../BSP/ch4/YL_WI_YY_6001.h"/>
+			</Folder>
+			<Folder Name="EC01">
+				<Folder Name="OneNet">
+					<F N="../BSP/EC01/OneNet/base64.c"/>
+					<F N="../BSP/EC01/OneNet/base64.h"/>
+					<F N="../BSP/EC01/OneNet/hmac.c"/>
+					<F N="../BSP/EC01/OneNet/hmac.h"/>
+					<F N="../BSP/EC01/OneNet/md5.c"/>
+					<F N="../BSP/EC01/OneNet/md5.h"/>
+					<F N="../BSP/EC01/OneNet/sha.c"/>
+					<F N="../BSP/EC01/OneNet/sha.h"/>
+					<F N="../BSP/EC01/OneNet/sha1.c"/>
+					<F N="../BSP/EC01/OneNet/sha1.h"/>
+					<F N="../BSP/EC01/OneNet/sha256.c"/>
+					<F N="../BSP/EC01/OneNet/sha256.h"/>
+					<F N="../BSP/EC01/OneNet/token.c"/>
+					<F N="../BSP/EC01/OneNet/token.h"/>
+				</Folder>
+				<F N="../BSP/EC01/EC_01.c"/>
+				<F N="../BSP/EC01/EC_01.h"/>
+			</Folder>
+			<Folder Name="flash">
+				<F N="../BSP/flash/flash.c"/>
+				<F N="../BSP/flash/flash.h"/>
+			</Folder>
+			<Folder Name="GPS">
+				<F N="../BSP/GPS/GP_02.c"/>
+				<F N="../BSP/GPS/GP_02.h"/>
+			</Folder>
+			<Folder Name="H2S">
+				<F N="../BSP/H2S/PS_H2S_100.c"/>
+				<F N="../BSP/H2S/PS_H2S_100.h"/>
+			</Folder>
+			<Folder Name="water">
+				<F N="../BSP/water/HLK-LD2413.c"/>
+				<F N="../BSP/water/HLK-LD2413.h"/>
+			</Folder>
+			<F N="../BSP/ADC.c"/>
+			<F N="../BSP/ADC.h"/>
+			<F N="../BSP/CRC_SUM.c"/>
+			<F N="../BSP/CRC_SUM.h"/>
+			<F N="../BSP/hardware.c"/>
+			<F N="../BSP/hardware.h"/>
+			<F N="../BSP/power.c"/>
+			<F N="../BSP/power.h"/>
+			<F N="../BSP/TTL.c"/>
+			<F N="../BSP/TTL.h"/>
+		</Folder>
+		<Folder Name="../COMMON">
+			<F N="../COMMON/arm_common_tables.h"/>
+			<F N="../COMMON/arm_const_structs.h"/>
+			<F N="../COMMON/arm_helium_utils.h"/>
+			<F N="../COMMON/arm_math.h"/>
+			<F N="../COMMON/arm_mve_tables.h"/>
+			<F N="../COMMON/arm_vec_math.h"/>
+			<F N="../COMMON/cachel1_armv7.h"/>
+			<F N="../COMMON/cmsis_armcc.h"/>
+			<F N="../COMMON/cmsis_armclang.h"/>
+			<F N="../COMMON/cmsis_armclang_ltm.h"/>
+			<F N="../COMMON/cmsis_compiler.h"/>
+			<F N="../COMMON/cmsis_gcc.h"/>
+			<F N="../COMMON/cmsis_iccarm.h"/>
+			<F N="../COMMON/cmsis_version.h"/>
+			<F N="../COMMON/core_armv81mml.h"/>
+			<F N="../COMMON/core_armv8mbl.h"/>
+			<F N="../COMMON/core_armv8mml.h"/>
+			<F N="../COMMON/core_cm0.h"/>
+			<F N="../COMMON/core_cm0plus.h"/>
+			<F N="../COMMON/core_cm1.h"/>
+			<F N="../COMMON/core_cm23.h"/>
+			<F N="../COMMON/core_cm3.h"/>
+			<F N="../COMMON/core_cm33.h"/>
+			<F N="../COMMON/core_cm35p.h"/>
+			<F N="../COMMON/core_cm4.h"/>
+			<F N="../COMMON/core_cm55.h"/>
+			<F N="../COMMON/core_cm7.h"/>
+			<F N="../COMMON/core_sc000.h"/>
+			<F N="../COMMON/core_sc300.h"/>
+			<F N="../COMMON/hc32f448.h"/>
+			<F N="../COMMON/hc32f4xx.h"/>
+			<F N="../COMMON/mpu_armv7.h"/>
+			<F N="../COMMON/mpu_armv8.h"/>
+			<F N="../COMMON/pmu_armv8.h"/>
+			<F N="../COMMON/system_hc32f448.c"/>
+			<F N="../COMMON/system_hc32f448.h"/>
+			<F N="../COMMON/tz_context.h"/>
+		</Folder>
+		<Folder Name="../DRIVER">
+			<Folder Name="inc">
+				<F N="../DRIVER/inc/hc32_ll.h"/>
+				<F N="../DRIVER/inc/hc32_ll_adc.h"/>
+				<F N="../DRIVER/inc/hc32_ll_aos.h"/>
+				<F N="../DRIVER/inc/hc32_ll_clk.h"/>
+				<F N="../DRIVER/inc/hc32_ll_cmp.h"/>
+				<F N="../DRIVER/inc/hc32_ll_def.h"/>
+				<F N="../DRIVER/inc/hc32_ll_efm.h"/>
+				<F N="../DRIVER/inc/hc32_ll_fcg.h"/>
+				<F N="../DRIVER/inc/hc32_ll_gpio.h"/>
+				<F N="../DRIVER/inc/hc32_ll_i2c.h"/>
+				<F N="../DRIVER/inc/hc32_ll_icg.h"/>
+				<F N="../DRIVER/inc/hc32_ll_interrupts.h"/>
+				<F N="../DRIVER/inc/hc32_ll_pwc.h"/>
+				<F N="../DRIVER/inc/hc32_ll_rmu.h"/>
+				<F N="../DRIVER/inc/hc32_ll_rtc.h"/>
+				<F N="../DRIVER/inc/hc32_ll_sram.h"/>
+				<F N="../DRIVER/inc/hc32_ll_tmr0.h"/>
+				<F N="../DRIVER/inc/hc32_ll_usart.h"/>
+				<F N="../DRIVER/inc/hc32_ll_utility.h"/>
+			</Folder>
+			<Folder Name="src">
+				<F N="../DRIVER/src/hc32_ll.c"/>
+				<F N="../DRIVER/src/hc32_ll_adc.c"/>
+				<F N="../DRIVER/src/hc32_ll_aos.c"/>
+				<F N="../DRIVER/src/hc32_ll_clk.c"/>
+				<F N="../DRIVER/src/hc32_ll_cmp.c"/>
+				<F N="../DRIVER/src/hc32_ll_efm.c"/>
+				<F N="../DRIVER/src/hc32_ll_fcg.c"/>
+				<F N="../DRIVER/src/hc32_ll_gpio.c"/>
+				<F N="../DRIVER/src/hc32_ll_i2c.c"/>
+				<F N="../DRIVER/src/hc32_ll_icg.c"/>
+				<F N="../DRIVER/src/hc32_ll_interrupts.c"/>
+				<F N="../DRIVER/src/hc32_ll_pwc.c"/>
+				<F N="../DRIVER/src/hc32_ll_rmu.c"/>
+				<F N="../DRIVER/src/hc32_ll_rtc.c"/>
+				<F N="../DRIVER/src/hc32_ll_sram.c"/>
+				<F N="../DRIVER/src/hc32_ll_tmr0.c"/>
+				<F N="../DRIVER/src/hc32_ll_usart.c"/>
+				<F N="../DRIVER/src/hc32_ll_utility.c"/>
+			</Folder>
+		</Folder>
+		<Folder Name="../MDK">
+			<Folder Name="RTE">
+				<Folder Name="_LaserProjectV2.1_Debug">
+					<F N="../MDK/RTE/_LaserProjectV2.1_Debug/RTE_Components.h"/>
+				</Folder>
+				<Folder Name="_LaserProjectV2.1_Release">
+					<F N="../MDK/RTE/_LaserProjectV2.1_Release/RTE_Components.h"/>
+				</Folder>
+			</Folder>
+		</Folder>
+	</Files>
+</Project>

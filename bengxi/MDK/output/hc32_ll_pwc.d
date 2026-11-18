@@ -1,0 +1,16 @@
+.\output\hc32_ll_pwc.o: ..\DRIVER\src\hc32_ll_pwc.c
+.\output\hc32_ll_pwc.o: ..\DRIVER\inc\hc32_ll_pwc.h
+.\output\hc32_ll_pwc.o: ..\DRIVER\inc\hc32_ll_def.h
+.\output\hc32_ll_pwc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\output\hc32_ll_pwc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\hc32_ll_pwc.o: ..\COMMON\hc32f4xx.h
+.\output\hc32_ll_pwc.o: ..\COMMON\hc32f448.h
+.\output\hc32_ll_pwc.o: ..\COMMON\core_cm4.h
+.\output\hc32_ll_pwc.o: ..\COMMON\cmsis_version.h
+.\output\hc32_ll_pwc.o: ..\COMMON\cmsis_compiler.h
+.\output\hc32_ll_pwc.o: ..\COMMON\cmsis_armcc.h
+.\output\hc32_ll_pwc.o: ..\COMMON\mpu_armv7.h
+.\output\hc32_ll_pwc.o: ..\COMMON\system_hc32f448.h
+.\output\hc32_ll_pwc.o: ..\COMMON\hc32f4xx.h
+.\output\hc32_ll_pwc.o: ..\APP\hc32f4xx_conf.h
+.\output\hc32_ll_pwc.o: ..\DRIVER\inc\hc32_ll_utility.h
