@@ -10,6 +10,9 @@ void appSlowTask(void *argument)
 {
 	unsigned short usCount = 0;
 	unsigned char uchStep = 0; 
+	unsigned char uchBuzCnt = 0;
+	unsigned char uchBuzTarget = 0; //变量记录当前的蜂鸣器目标时长
+	bool bsleep = false;
 	
 	HAL_TIM_Base_Start_IT(&htim3);
 
@@ -27,6 +30,40 @@ void appSlowTask(void *argument)
 		if (xSemaphoreTake(xTim3Sem, portMAX_DELAY) == pdTRUE)
 		{
 			usCount ++;
+
+			if (usCount == 2)//蜂鸣器
+			{
+				uchBuzCnt = 1;
+				uchBuzTarget = 12;//开机长响：12 * 100ms = 1200ms
+			}
+			if (uchBuzCnt != 0)
+			{
+				if (uchBuzCnt == 1)
+				{
+					Buzzer_Start();
+				}
+
+				uchBuzCnt++;
+
+				if (uchBuzCnt >= uchBuzTarget)
+				{
+					Buzzer_Stop();
+					uchBuzCnt = 0;
+					if (bsleep)
+					{
+						bsleep = false;
+						usCount = 0;
+						stu_4G.process = 0;
+						if (stu_sensor.uchLDCnt == 0)
+						{
+							Sleep(stu_flash.updateIntervalmins);
+						}
+						else{
+							Sleep(5);
+						}
+					}
+				}
+			}
 
 			if (stu_flag.uchTempHumFlag != 0)//温湿度引脚中断,转换完成
 			{
@@ -88,14 +125,15 @@ void appSlowTask(void *argument)
 				//	运行超时				磁开关关机						4g上报完成
 				if ((usCount >= 600) || (stu_flag.uchMagnetFlag != 0) || (stu_4G.process == 4))
 				{
-					usCount = 0;
-					stu_4G.process = 0;
-					if (stu_sensor.uchLDCnt == 0)
+					if (!bsleep) // 防止重复进入分支
 					{
-						Sleep(stu_flash.updateIntervalmins);
-					}
-					else{
-						Sleep(5);
+						bsleep = true;        // 标记进入关机流程
+						uchBuzCnt = 1;        // 如果此时蜂鸣器没响，强制触发
+						uchBuzTarget = 4;     // 关机短响：4 * 100ms = 400ms
+						if (stu_flag.uchMagnetFlag != 0)
+						{
+							uchBuzCnt = uchBuzTarget;
+						}
 					}
 				}
 			}

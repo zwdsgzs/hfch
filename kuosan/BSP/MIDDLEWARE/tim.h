@@ -8,19 +8,25 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-#define TIM3PER		160-1
+#define TIM3PRE		160-1
 #define TIM3NUM		10000-1
 
+#define TIM6PRE		16-1
+#define TIM6NUM		185-1
+
 extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
 void TIM3_Init(void);
+void TIM6_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void Buzzer_Start(void);
+void Buzzer_Stop(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

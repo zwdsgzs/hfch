@@ -52,6 +52,13 @@ extern "C" {
 #define LED_POWER_RESET 	HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET)
 #define LED_POWER_TOGGLE 	HAL_GPIO_TogglePin(LED_PORT, LED_PIN)
 
+//------------------蜂鸣器-----------------
+#define BUZ_PORT			GPIOB
+#define BUZ_PIN				GPIO_PIN_15
+#define BUZ_POWER_SET   	HAL_GPIO_WritePin(BUZ_PORT, BUZ_PIN, GPIO_PIN_SET)
+#define BUZ_POWER_RESET 	HAL_GPIO_WritePin(BUZ_PORT, BUZ_PIN, GPIO_PIN_RESET)
+#define BUZ_POWER_TOGGLE 	HAL_GPIO_TogglePin(BUZ_PORT, BUZ_PIN)
+
 //------------------4G-----------------
 #define LTE_EN_PORT			GPIOB
 #define LTE_EN_PIN			GPIO_PIN_1
@@ -64,7 +71,7 @@ extern "C" {
 //#define LTE_PWRKEY_RESET   	HAL_GPIO_WritePin(LTE_PWRKEY_PORT, LTE_PWRKEY_PIN, GPIO_PIN_RESET)
 #define LTE_PWRKEY_SET   	HAL_GPIO_WritePin(LTE_PWRKEY_PORT, LTE_PWRKEY_PIN, GPIO_PIN_RESET)
 #define LTE_PWRKEY_RESET   	HAL_GPIO_WritePin(LTE_PWRKEY_PORT, LTE_PWRKEY_PIN, GPIO_PIN_SET)
-
+//硬件设计开漏控制，芯片端与控制是反相的，这里反转，代表芯片端电平，方便调试
 
 #define LTE_RST_PORT		GPIOC
 #define LTE_RST_PIN			GPIO_PIN_8

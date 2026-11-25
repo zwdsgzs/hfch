@@ -102,6 +102,7 @@ void sleep_pin_Power_cfg(void)
     __HAL_RCC_USART5_CLK_DISABLE();
     __HAL_RCC_I2C1_CLK_DISABLE();
     __HAL_RCC_TIM3_CLK_DISABLE(); 
+	__HAL_RCC_TIM6_CLK_DISABLE(); 
 }
 
 void wkp_pin_Power_cfg(void)
@@ -120,6 +121,7 @@ void wkp_pin_Power_cfg(void)
     __HAL_RCC_USART5_CLK_ENABLE();
     __HAL_RCC_I2C1_CLK_ENABLE();
     __HAL_RCC_TIM3_CLK_ENABLE();
+	__HAL_RCC_TIM6_CLK_ENABLE();
 
 	/* 清空缓冲区 */
 	ring_buf_clear(&rb_usart1);

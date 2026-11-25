@@ -38,6 +38,7 @@ int main(void)
 	USART5_Init(&huart5);//雷达	modbus rtu 长度固定，发送读取
 	I2C1_Init();
 	TIM3_Init();
+	TIM6_Init();
 	RTC_Init();
 //-------------flash数据初始化----------------------
 	flashReadFromEEPROM();

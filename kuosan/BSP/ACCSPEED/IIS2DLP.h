@@ -37,9 +37,9 @@ extern "C" {
 /* 唤醒持续时间：防止瞬时抖动误触发
  * 1 LSB = 1 × 1/OD
  * 例如 ODR = 100Hz，则 1 LSB = 10ms
- * 这里设置 2 LSB = 20ms
+ * 这里设置 3 LSB 最大
  */
-#define IIS2DLPC_WAKE_DUR           8		//800ms
+#define IIS2DLPC_WAKE_DUR           3		//240ms
 
 /* ---------- 6D 阈值 ---------- */
 /* 0 = 80°, 1 = 70°, 2 = 60°, 3 = 50°
@@ -72,7 +72,7 @@ extern "C" {
 #define IIS2DLPC_ODR_400HZ          0x07
 #define IIS2DLPC_ODR_800HZ          0x08
 #define IIS2DLPC_ODR_1600HZ         0x09
-#define IIS2DLPC_ODR                IIS2DLPC_ODR_100HZ
+#define IIS2DLPC_ODR                IIS2DLPC_ODR_12HZ5
 
 
 /* ============================================================
